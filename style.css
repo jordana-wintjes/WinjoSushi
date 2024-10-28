@@ -1,3 +1,26 @@
 body {
-    background-color: black;
+    background-color: #E7D8C9 !important;
+}
+.winjoLogo{
+    width: 300px;
+}
+/* Custom styles for the menu on the left side of the page */
+.list-group-item {
+    background-color: #F9C74F;
+    color: #343a40; 
+    border: 1px solid #F9C74F;
+}
+
+.list-group-item:hover {
+    background-color: #E5383B;
+    color: white; 
+    border-color: #E5383B;
+
+}
+
+/* Specific styles for active items */
+.list-group-item.active {
+    background-color: #E5383B; 
+    color: white; 
+    border-color: #E5383B;
 }
