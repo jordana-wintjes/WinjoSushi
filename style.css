@@ -8,7 +8,8 @@ body, html {
     background-color: #e9ecef; /* Light grey background */
     height: calc(100vh - 80px);
     overflow-y: auto;
-    padding-right: 16px;
+    padding-right: 5px;
+    padding-bottom: 20px;
 }
 /* Style the scrollbar for the light-grey-background */
 .light-grey-background::-webkit-scrollbar {
@@ -93,4 +94,9 @@ body, html {
 .card-price {
     margin-bottom: 0; /* Remove bottom margin */
     font-size: 1.25rem; /* Match the font size of the title */
+}
+
+body.modal-open {
+    overflow-y: hidden;
+    padding-right: 15px;
 }
