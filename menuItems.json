@@ -174,10 +174,10 @@
         "price": "$6.00"
     },
     {
-        "name": "Yuzu Sorbet (one scoop)",
-        "description": "Bright and refreshing sorbet with a citrusy yuzu flavor.",
-        "ingredients": ["Yuzu juice", "sugar", "water"],
-        "price": "$6.00"
+        "name": "Chocolate Mochi",
+        "description": "Deliciously chewy rice dough filled with rich chocolate ice cream for a sweet treat.",
+        "ingredients": ["Glutinous rice flour", "chocolate ice cream", "sugar", "cocoa powder"],
+        "price": "$4.50"
     },
     {
         "name": "Water",
