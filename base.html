@@ -11,39 +11,115 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="d-flex justify-content-between align-items-center mb-5 pr-3">
+    <div class="d-flex justify-content-between align-items-center mb-1 pr-3">
         <img src="winjoLogo.png" alt="Winjo Sushi" class="winjoLogo">
         <div>
-            <button type="button" class="btn btn-light btn-lg mr-2">Cart</button>
-            <button type="button" class="btn btn-light btn-lg mr-2">Service</button>
-            <button type="button" class="btn btn-light btn-lg">Pay</button>
+            <button type="button" class="btn btn-danger btn-lg mr-2">Cart</button>
+            <button type="button" class="btn btn-danger btn-lg mr-2">Service</button>
+            <button type="button" class="btn btn-danger btn-lg">Pay</button>
         </div>
     </div>
     <div class="row">
-        <div class="col-4">
+        <div class="col-2">
           <div class="list-group" id="list-tab" role="tablist">
             <a class="list-group-item list-group-item-action menu-btn-custom active" id="list-appetizers-list" data-toggle="list" href="#list-appetizers" role="tab" aria-controls="appetizers">Appetizers</a>
-            <a class="list-group-item list-group-item-action menu-btn-custom" id="list-bento-list" data-toggle="list" href="#list-bento" role="tab" aria-controls="bento">Bento</a>
-            <a class="list-group-item list-group-item-action menu-btn-custom" id="list-sushi-list" data-toggle="list" href="#list-sushi" role="tab" aria-controls="sushi">Sushi</a>
+            <a class="list-group-item list-group-item-action menu-btn-custom" id="list-bento-list" data-toggle="list" href="#list-bento" role="tab" aria-controls="bento">Sashimi</a>
+            <a class="list-group-item list-group-item-action menu-btn-custom" id="list-sushi-list" data-toggle="list" href="#list-sushi" role="tab" aria-controls="sushi">Rolls</a>
             <a class="list-group-item list-group-item-action menu-btn-custom" id="list-dessert-list" data-toggle="list" href="#list-dessert" role="tab" aria-controls="dessert">Dessert</a>
             <a class="list-group-item list-group-item-action menu-btn-custom" id="list-drinks-list" data-toggle="list" href="#list-drinks" role="tab" aria-controls="drinks">Drinks</a>
           </div>
         </div>
-        <div class="col-8">
+        <div class="col-10 light-grey-background">
           <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="list-appetizers" role="tabpanel" aria-labelledby="list-appetizers-list"><div class="container">
-                <div class="row">
-                  <div class="col">
-                    1 of 3
+            <div class="tab-pane fade show active" id="list-appetizers" role="tabpanel" aria-labelledby="list-appetizers-list">
+                <div class="card-deck">
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Edamame.jpg" alt="Edamame">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Edamame</h5>
+                                <p class="card-text mb-0">$5.50</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Dumpling.jpg" alt="Dumplings">
+                        <div class="card-body">
+                            <div class="card-text d-flex justify-content-between align-items-start">
+                                <h5 class="card-title mb-0">Dumplings (5 pcs)</h5>
+                                <p class="card-price mb-0">$7.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Spring Roll.jpg" alt="Spring Rolls">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Spring Rolls (6pcs)</h5>
+                                <p class="card-text mb-0">$6.50</p>
+                            </div>
+                        </div>
+                    </div>
                   </div>
-                  <div class="col">
-                    2 of 3
+                  <div class="card-deck">
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Chicken Skewer.jpg" alt="Chicken Skewers">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Chicken Skewers (4 pcs)</h5>
+                                <p class="card-text mb-0">$8.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Beef Skewer.jpg" alt="Beef Skewers">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Beef Skewers (4 pcs)</h5>
+                                <p class="card-text mb-0">$9.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Shrimp Skewer.jpg" alt="Edamame">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Shrimp Skewers (4 pcs)</h5>
+                                <p class="card-text mb-0">$10.50</p>
+                            </div>
+                        </div>
+                    </div>
                   </div>
-                  <div class="col">
-                    3 of 3
+                  <div class="card-deck">
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Tataki.jpg" alt="Chicken Skewers">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Beef Tataki (3 pcs) </h5>
+                                <p class="card-text mb-0">$12.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Garden Salad.jpg" alt="Beef Skewers">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Garden Salad</h5>
+                                <p class="card-text mb-0">$6.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img class="card-img-top" src="./menuItemImages/Kimchi.jpg" alt="Edamame">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Kimchi</h5>
+                                <p class="card-text mb-0"> $4.50</p>
+                            </div>
+                        </div>
+                    </div>
                   </div>
-                </div>
-              </div></div>
+            </div>
             <div class="tab-pane fade" id="list-bento" role="tabpanel" aria-labelledby="list-bento-list">Bento</div>
             <div class="tab-pane fade" id="list-sushi" role="tabpanel" aria-labelledby="list-sushi-list">Sushi</div>
             <div class="tab-pane fade" id="list-dessert" role="tabpanel" aria-labelledby="list-dessert-list">Dessert</div>

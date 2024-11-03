@@ -1,41 +1,96 @@
-/* For the main background color */
-body {
-    background-color: #E7D8C9;
+body, html {
+    height: calc(100vh - 60px); 
+    width: calc(100vw - 15px);
+    margin: 0;
+    background-color: white;
 }
-.winjoLogo{
+.light-grey-background {
+    background-color: #e9ecef; /* Light grey background */
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding-right: 16px;
+}
+/* Style the scrollbar for the light-grey-background */
+.light-grey-background::-webkit-scrollbar {
+    width: 16px; /* Width of the scrollbar */
+}
+
+.light-grey-background::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+}
+
+.light-grey-background::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Color of the scrollbar thumb on hover */
+}
+
+.winjoLogo {
     width: 350px;
+    margin-left: 10px;
 }
+.card-deck{
+    padding-top: 20px;
+}
+
 /* For the menu on the left side of the page */
 .list-group-item {
-    background-color: #F9C74F;
-    color: #343a40; 
-    border: 1px solid #F9C74F;
+    background-color: white;
+    border: 1px solid #E5383B;
     font-size: 1.25rem; /* Adjust the font size as needed */
-    padding: 1rem 1.5rem; 
+    padding: 1rem 1.5rem;
+    color: #495057; /* Slightly darker grey text color */
 }
 
 .list-group-item:hover {
-    background-color: #E5383B;
-    color: white; 
+    background-color: rgba(229, 56, 59, 0.2); /* More transparent red */
+    color: #E5383B; /* Red text color on hover */
     border-color: #E5383B;
-
 }
 
 /* Specific styles for active items */
 .list-group-item.active {
-    background-color: #E5383B; 
-    color: white; 
+    background-color: rgba(229, 56, 59, 0.2); /* More transparent red */
+    color: #E5383B; /* Red text color when active */
     border-color: #E5383B;
 }
+
 .menu-btn-custom {
     display: block;
-    width: 100%;
+    width: 195px;
     margin-bottom: 10px;
+    margin-left: 10px;
     padding: 10px 20px;
     font-size: 1.25rem;
     text-align: center;
-    border-radius: 0.25rem;
-    text-decoration: none;
-    width: 150px;
+    border-radius: 0.35rem;
+}
+.card {
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 20px; /* Padding inside the card */
+    margin-bottom: 20px; /* Space between cards */
+}
+
+.card-body {
+    font-size: 1.25rem;
+}
+.card-deck{
+    width: 100%;
+}
+.tab-pane{
     margin-left: 15px;
+}
+.card-img-top{
+    width: 100%
+}
+.card-title {
+    margin-bottom: 0; /* Remove bottom margin */
+    font-size: 1.25rem; /* Adjust the font size */
+    line-height: 1.2; /* Adjust the line height */
+}
+
+.card-price {
+    margin-bottom: 0; /* Remove bottom margin */
+    font-size: 1.25rem; /* Match the font size of the title */
 }
