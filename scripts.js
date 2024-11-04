@@ -32,16 +32,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelectorAll('.card').forEach(function (card, index) {
                     card.addEventListener('click', function () {
                         var item = data[index];
-                        showModal(item);
+                        var imgSrc = card.querySelector('img').src;
+                        showModal(item, imgSrc);
                     });
                 });
             });
 
         // Function to show the modal with item details
-        function showModal(item) {
+        function showModal(item, imgSrc) {
+            var ingredientsList = item.ingredients.map(ingredient => {
+                if (item.removableIngredients.includes(ingredient)) {
+                    return `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${ingredient}" id="${ingredient}" checked>
+                            <label class="form-check-label" for="${ingredient}">
+                                ${ingredient}
+                            </label>
+                        </div>
+                    `;
+                } else {
+                    return `<li>${ingredient}</li>`;
+                }
+            }).join('');
+
             var modalContent = `
                 <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="itemModalLabel">${item.name}</h5>
@@ -50,12 +66,26 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <p><strong>Description:</strong> ${item.description}</p>
-                                <p><strong>Ingredients:</strong> ${item.ingredients.join(', ')}</p>
-                                <p><strong>Price:</strong> ${item.price}</p>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img src="${imgSrc}" class="img-fluid mb-3" alt="${item.name}">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <p><strong></strong> ${item.description}</p>
+                                            <p><strong>Ingredients:</strong></p>
+                                            <ul>${ingredientsList}</ul>
+                                            <div class="form-group">
+                                                <label for="specialRequests">Special Requests:</label>
+                                                <textarea class="form-control" id="specialRequests" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger" id="removeItem">Remove Item</button>
+                                <button type="button" class="btn btn-primary" id="addItem">Add Item</button>
                             </div>
                         </div>
                     </div>
@@ -71,6 +101,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('itemModal').remove();
                 // Reset padding-right when modal is hidden
                 document.body.style.paddingRight = '';
+            });
+
+            // Add event listeners for the buttons
+            document.getElementById('removeItem').addEventListener('click', function () {
+                // Logic to remove the item
+                alert('Item removed');
+            });
+
+            document.getElementById('addItem').addEventListener('click', function () {
+                // Get unchecked ingredients
+                var uncheckedIngredients = Array.from(document.querySelectorAll('.form-check-input:not(:checked)')).map(input => input.value);
+                var specialRequests = document.getElementById('specialRequests').value;
+
+                // Logic to add the item with modifications
+                alert('Item added with modifications: ' + JSON.stringify({
+                    name: item.name,
+                    price: item.price,
+                    uncheckedIngredients: uncheckedIngredients,
+                    specialRequests: specialRequests
+                }));
             });
         }
     }

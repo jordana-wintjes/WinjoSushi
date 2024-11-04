@@ -100,3 +100,22 @@ body.modal-open {
     overflow-y: hidden;
     padding-right: 15px;
 }
+
+.modal-dialog {
+    max-width: 800px; /* Adjust the width as needed */
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: row;
+}
+
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+    margin-right: 20px;
+}
+
+.modal-body .form-group {
+    flex: 1;
+}
