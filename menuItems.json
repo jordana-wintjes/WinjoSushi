@@ -129,7 +129,7 @@
         "name": "California Roll (8 pcs)",
         "description": "Classic roll filled with crab, avocado, and cucumber, topped with sesame seeds.",
         "ingredients": ["Imitation crab", "avocado", "cucumber", "sushi rice", "nori"],
-        "removableIngredients": ["avocado", "cucumber"],
+        "removableIngredients": ["avocado", "cucumber", "sesame seeds"],
         "price": "$8.50"
     },
     {
