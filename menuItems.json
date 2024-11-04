@@ -4,293 +4,377 @@
         "description": "Lightly salted steamed young soybeans in their pods.",
         "ingredients": ["Edamame", "sea salt"],
         "removableIngredients": ["sea salt"],
-        "price": "$5.50"
+        "price": "$5.50",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Edamame.jpg"
     },
     {
         "name": "Dumplings (5 pcs)",
         "description": "Pan-fried dumplings stuffed with savory meat and vegetables.",
         "ingredients": ["Pork and mixed vegetable filling", "dumpling wrapper", "garlic", "soy sauce"],
         "removableIngredients": ["garlic", "soy sauce"],
-        "price": "$7.00"
+        "price": "$7.00",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Dumpling.jpg"
     },
     {
         "name": "Spring Rolls (6 pcs)",
         "description": "Crispy rolls filled with seasoned vegetables, served with sweet chili sauce.",
         "ingredients": ["Cabbage", "carrots", "vermicelli", "wrapper", "sweet chili sauce"],
         "removableIngredients": ["sweet chili sauce"],
-        "price": "$6.50"
+        "price": "$6.50",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Spring Roll.jpg"
     },
     {
         "name": "Chicken Skewers (4 pcs)",
         "description": "Juicy grilled chicken skewers glazed with teriyaki sauce.",
         "ingredients": ["Chicken", "teriyaki glaze", "sesame seeds"],
         "removableIngredients": ["teriyaki glaze", "sesame seeds"],
-        "price": "$8.00"
+        "price": "$8.00",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Chicken Skewer.jpg"
     },
     {
         "name": "Beef Skewers (4 pcs)",
         "description": "Tender beef skewers marinated and grilled to perfection.",
         "ingredients": ["Beef", "soy sauce marinade", "scallions"],
         "removableIngredients": ["scallions"],
-        "price": "$9.00"
+        "price": "$9.00",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Beef Skewer.jpg"
     },
     {
         "name": "Shrimp Skewers (4 pcs)",
         "description": "Grilled shrimp skewers with a hint of garlic butter and lemon.",
         "ingredients": ["Shrimp", "garlic butter", "lemon"],
         "removableIngredients": ["garlic butter", "lemon"],
-        "price": "$10.50"
+        "price": "$10.50",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Shrimp Skewer.jpg"
     },
     {
         "name": "Beef Tataki (3 pcs)",
         "description": "Seared, thinly sliced beef served with ponzu sauce.",
         "ingredients": ["Beef", "ponzu", "radish", "scallions"],
         "removableIngredients": ["ponzu", "radish", "scallions"],
-        "price": "$12.00"
+        "price": "$12.00",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Tataki.jpg"
     },
     {
         "name": "Garden Salad",
         "description": "Fresh greens topped with cucumbers, tomatoes, red onions, spinach, and ginger dressing.",
         "ingredients": ["Lettuce", "cucumber", "tomato", "carrots", "red onions", "spinach", "peanuts", "ginger dressing"],
         "removableIngredients": ["cucumber", "tomato", "carrots", "red onions", "spinach", "peanuts", "ginger dressing"],
-        "price": "$6.00"
+        "price": "$6.00",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Garden Salad.jpg"
     },
     {
         "name": "Kimchi",
         "description": "Spicy, fermented Korean cabbage with a bold kick.",
         "ingredients": ["Napa cabbage", "chili paste", "garlic", "ginger"],
         "removableIngredients": ["garlic", "ginger"],
-        "price": "$4.50"
+        "price": "$4.50",
+        "category": "Appetizers",
+        "image": "./menuItemImages/Kimchi.jpg"
     },
     {
         "name": "Salmon Sashimi (5 pcs)",
         "description": "Rich and fresh salmon slices.",
         "ingredients": ["Fresh salmon"],
         "removableIngredients": [],
-        "price": "$11.00"
+        "price": "$11.00",
+        "category": "Sashimi",
+        "image": "./menuItemImages/Salmon Sashimi.jpg"
     },
     {
         "name": "Tuna Sashimi (5 pcs)",
         "description": "Lean and flavorful tuna slices.",
         "ingredients": ["Fresh tuna"],
         "removableIngredients": [],
-        "price": "$13.50"
+        "price": "$13.50",
+        "category": "Sashimi",
+        "image": "./menuItemImages/Tuna sashimi.jpg"
     },
     {
         "name": "Octopus Sashimi (5 pcs)",
         "description": "Firm, slightly chewy octopus with a mild, briny taste.",
         "ingredients": ["Octopus", "yuzu ponzu"],
         "removableIngredients": ["yuzu ponzu"],
-        "price": "$11.00"
+        "price": "$11.00",
+        "category": "Sashimi",
+        "image": "./menuItemImages/Octopus Sashimi.jpg"
     },
     {
         "name": "Egg Sashimi (Tamago) (8 pcs)",
         "description": "Sweet Japanese omelet with a fluffy, layered texture.",
         "ingredients": ["Tamago egg", "mirin", "sugar", "soy sauce"],
         "removableIngredients": ["mirin", "sugar", "soy sauce"],
-        "price": "$7.50"
+        "price": "$7.50",
+        "category": "Sashimi",
+        "image": "./menuItemImages/Egg sashimi.jpg"
     },
     {
         "name": "Red Snapper Sashimi (8 pcs)",
         "description": "Delicate and clean-tasting, with a hint of ocean sweetness.",
         "ingredients": ["Red snapper", "shiso leaf"],
         "removableIngredients": ["shiso leaf"],
-        "price": "$14.00"
+        "price": "$14.00",
+        "category": "Sashimi",
+        "image": "./menuItemImages/Red Snapper.jpg"
     },
     {
         "name": "Yellowtail Sashimi (5 pcs)",
         "description": "Succulent slices with a buttery texture and mild flavor.",
         "ingredients": ["Yellowtail (Hamachi)"],
         "removableIngredients": [],
-        "price": "$13.00"
+        "price": "$13.00",
+        "category": "Sashimi",
+        "image": "./menuItemImages/Yellowtail Sashimi.jpg"
     },
     {
         "name": "Cucumber Roll (8 pcs)",
         "description": "Crisp cucumber wrapped in seasoned rice and nori for a refreshing bite.",
         "ingredients": ["Cucumber", "sushi rice", "nori"],
         "removableIngredients": ["Cucumber"],
-        "price": "$5.50"
+        "price": "$5.50",
+        "category": "Rolls",
+        "image": "./menuItemImages/Cucumber Roll.jpg"
     },
     {
         "name": "Avocado Roll (8 pcs)",
         "description": "Creamy avocado slices rolled in rice and seaweed for a light, vegan-friendly option.",
         "ingredients": ["Avocado", "sushi rice", "nori"],
         "removableIngredients": ["Avocado"],
-        "price": "$6.00"
+        "price": "$6.00",
+        "category": "Rolls",
+        "image": "./menuItemImages/Avocado Roll.jpg"
     },
     {
         "name": "Beef Teriyaki Roll (4 pcs)",
         "description": "Savory beef teriyaki rolled with rice and nori, drizzled with extra teriyaki glaze.",
         "ingredients": ["Grilled beef", "teriyaki sauce", "cucumber", "sushi rice", "nori"],
         "removableIngredients": ["teriyaki sauce", "cucumber"],
-        "price": "$8.00"
+        "price": "$8.00",
+        "category": "Rolls",
+        "image": "./menuItemImages/Beef Teriyaki.png"
     },
     {
         "name": "California Roll (8 pcs)",
         "description": "Classic roll filled with crab, avocado, and cucumber, topped with sesame seeds.",
         "ingredients": ["Imitation crab", "avocado", "cucumber", "sushi rice", "nori"],
         "removableIngredients": ["avocado", "cucumber", "sesame seeds"],
-        "price": "$8.50"
+        "price": "$8.50",
+        "category": "Rolls",
+        "image": "./menuItemImages/California Roll.jpg"
     },
     {
         "name": "Rainbow Roll (6 pcs)",
         "description": "Vibrant roll topped with assorted sashimi for a colorful and flavorful experience.",
         "ingredients": ["Crab", "avocado", "cucumber", "tuna", "salmon", "yellowtail", "sushi rice", "nori"],
         "removableIngredients": ["avocado", "cucumber"],
-        "price": "$13.00"
+        "price": "$13.00",
+        "category": "Rolls",
+        "image": "./menuItemImages/Rainbow Roll.jpg"
     },
     {
         "name": "Spider Roll (6 pcs)",
         "description": "Crispy soft-shell crab with cucumber and avocado, drizzled with unagi sauce.",
         "ingredients": ["Soft-shell crab", "cucumber", "avocado", "unagi sauce", "sushi rice", "nori"],
         "removableIngredients": ["cucumber", "avocado", "unagi sauce"],
-        "price": "$12.50"
+        "price": "$12.50",
+        "category": "Rolls",
+        "image": "./menuItemImages/Spider Roll.jpg"
     },
     {
         "name": "Vanilla Mochi",
         "description": "Chewy rice dough filled with creamy vanilla ice cream.",
         "ingredients": ["Glutinous rice flour", "vanilla ice cream", "sugar"],
         "removableIngredients": [],
-        "price": "$4.50"
+        "price": "$4.50",
+        "category": "Desserts",
+        "image": "./menuItemImages/Vanilla mochi.jpg"
     },
     {
         "name": "Vanilla Ice Cream (one scoop)",
         "description": "Classic, smooth vanilla ice cream for a simple, sweet finish.",
         "ingredients": ["Milk", "cream", "sugar", "vanilla extract"],
         "removableIngredients": [],
-        "price": "$4.00"
+        "price": "$4.00",
+        "category": "Desserts",
+        "image": "./menuItemImages/Vanilla Ice cream.jpg"
     },
     {
         "name": "Chocolate Ice Cream (one scoop)",
         "description": "Rich and velvety chocolate ice cream, a timeless favorite.",
         "ingredients": ["Milk", "cream", "sugar", "cocoa powder"],
         "removableIngredients": [],
-        "price": "$4.00"
+        "price": "$4.00",
+        "category": "Desserts",
+        "image": "./menuItemImages/Chocolate Icecream.jpg"
     },
     {
         "name": "Green Tea Ice Cream (one scoop)",
         "description": "Earthy matcha-flavored ice cream with a creamy texture.",
         "ingredients": ["Milk", "cream", "sugar", "matcha powder"],
         "removableIngredients": [],
-        "price": "$4.50"
+        "price": "$4.50",
+        "category": "Desserts",
+        "image": "./menuItemImages/Green Tea Ice cream.jpg"
     },
     {
         "name": "Mango Ice Cream (one scoop)",
         "description": "Tropical mango ice cream with a refreshing finish.",
         "ingredients": ["Milk", "cream", "sugar", "mango puree"],
         "removableIngredients": [],
-        "price": "$4.50"
+        "price": "$4.50",
+        "category": "Desserts",
+        "image": "./menuItemImages/Mango Icecream.jpg"
     },
     {
         "name": "Matcha Cheesecake",
         "description": "Creamy cheesecake infused with matcha for an earthy, bittersweet treat.",
         "ingredients": ["Cream cheese", "matcha", "sugar", "graham crust"],
         "removableIngredients": [],
-        "price": "$7.00"
+        "price": "$7.00",
+        "category": "Desserts",
+        "image": "./menuItemImages/Cheesecake.jpg"
     },
     {
         "name": "Dorayaki",
         "description": "Fluffy pancake sandwich filled with sweet red bean paste.",
         "ingredients": ["Flour", "eggs", "sugar", "red bean paste"],
         "removableIngredients": [],
-        "price": "$5.00"
+        "price": "$5.00",
+        "category": "Desserts",
+        "image": "./menuItemImages/Dorayaki.jpg"
     },
     {
         "name": "Yuzu Sorbet (one scoop)",
         "description": "Bright and refreshing sorbet with a citrusy yuzu flavor.",
         "ingredients": ["Yuzu juice", "sugar", "water"],
         "removableIngredients": [],
-        "price": "$6.00"
+        "price": "$6.00",
+        "category": "Desserts",
+        "image": "./menuItemImages/Yuzu Sorbet.jpg"
     },
     {
         "name": "Chocolate Mochi",
         "description": "Deliciously chewy rice dough filled with rich chocolate ice cream for a sweet treat.",
         "ingredients": ["Glutinous rice flour", "chocolate ice cream", "sugar", "cocoa powder"],
         "removableIngredients": [],
-        "price": "$4.50"
+        "price": "$4.50",
+        "category": "Desserts",
+        "image": "./menuItemImages/Chocolate Mochi.jpg"
     },
     {
         "name": "Water",
         "description": "Refreshingly simple and essential.",
         "ingredients": ["Filtered water"],
         "removableIngredients": [],
-        "price": "$0.00 (Complimentary)"
+        "price": "$0.00 (Complimentary)",
+        "category": "Drinks",
+        "image": "./menuItemImages/Water.jpg"
     },
     {
         "name": "Root Beer (Can)",
         "description": "A classic, frothy soda with a unique blend of herbs and spices.",
         "ingredients": ["Carbonated water", "sugar", "sassafras extract", "vanilla"],
         "removableIngredients": [],
-        "price": "$3.00"
+        "price": "$3.00",
+        "category": "Drinks",
+        "image": "./menuItemImages/Root Beer.png"
     },
     {
         "name": "Iced Tea (Can)",
         "description": "Chilled tea brewed to perfection.",
         "ingredients": ["Brewed tea", "sugar", "lemon"],
         "removableIngredients": ["lemon"],
-        "price": "$3.50"
+        "price": "$3.50",
+        "category": "Drinks",
+        "image": "./menuItemImages/Iced Tea.jpg"
     },
     {
         "name": "Sprite (Can)",
         "description": "Crisp and refreshing lemon-lime soda that quenches your thirst.",
         "ingredients": ["Carbonated water", "high fructose corn syrup", "citric acid"],
         "removableIngredients": [],
-        "price": "$3.00"
+        "price": "$3.00",
+        "category": "Drinks",
+        "image": "./menuItemImages/Sprite.png"
     },
     {
         "name": "Ginger Ale (Can)",
         "description": "Sparkling drink with a spicy ginger flavor, perfect for digestion.",
         "ingredients": ["Carbonated water", "sugar", "ginger extract"],
         "removableIngredients": [],
-        "price": "$3.00"
+        "price": "$3.00",
+        "category": "Drinks",
+        "image": "./menuItemImages/Gingerale.jpg"
     },
     {
         "name": "Coca-Cola (Can)",
         "description": "The classic cola with a bold flavor, served chilled.",
         "ingredients": ["Carbonated water", "sugar", "caramel color", "caffeine"],
         "removableIngredients": [],
-        "price": "$3.00"
+        "price": "$3.00",
+        "category": "Drinks",
+        "image": "./menuItemImages/Coca-Cola.jpg"
     },
     {
         "name": "Green Tea",
         "description": "Hot green tea with a refreshing, earthy flavor.",
         "ingredients": ["Green tea leaves", "water"],
         "removableIngredients": [],
-        "price": "$3.50"
+        "price": "$3.50",
+        "category": "Drinks",
+        "image": "./menuItemImages/Green tea.jpg"
     },
     {
         "name": "Yuzu Lemonade",
         "description": "A refreshing blend of yuzu citrus and lemonade, served chilled.",
         "ingredients": ["Yuzu juice", "lemonade", "sugar", "ice"],
         "removableIngredients": ["ice"],
-        "price": "$4.00"
+        "price": "$4.00",
+        "category": "Drinks",
+        "image": "./menuItemImages/Yuzu Lemonade.jpg"
     },
     {
         "name": "Calpico (can)",
         "description": "A sweet, tangy Japanese drink with a unique yogurt-like flavor.",
         "ingredients": ["Water", "sugar", "non-fat dry milk", "lactic acid"],
         "removableIngredients": [],
-        "price": "$3.50"
+        "price": "$3.50",
+        "category": "Drinks",
+        "image": "./menuItemImages/Calpico.jpg"
     },
     {
         "name": "Ramune",
         "description": "Fizzy Japanese soda, served in a unique bottle.",
         "ingredients": ["Carbonated water", "sugar", "natural and artificial flavors"],
         "removableIngredients": [],
-        "price": "$3.50"
+        "price": "$3.50",
+        "category": "Drinks",
+        "image": "./menuItemImages/Ramune.jpg"
     },
     {
         "name": "Sake (Hot)",
         "description": "Traditional Japanese rice wine, available hot for a warm experience.",
         "ingredients": ["Rice", "water", "koji", "yeast"],
         "removableIngredients": [],
-        "price": "$6.00"
+        "price": "$6.00",
+        "category": "Drinks",
+        "image": "./menuItemImages/Hot Sake.jpg"
     },
     {
         "name": "Sake (Cold)",
         "description": "Traditional Japanese rice wine, available cold for a refreshing experience.",
         "ingredients": ["Rice", "water", "koji", "yeast"],
         "removableIngredients": [],
-        "price": "$6.00"
+        "price": "$6.00",
+        "category": "Drinks",
+        "image": "./menuItemImages/Sake (COLD).jpg"
     }
 ]

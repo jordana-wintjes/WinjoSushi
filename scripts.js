@@ -28,15 +28,52 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch('menuItems.json')
             .then(response => response.json())
             .then(data => {
-                // Add click event listeners to the cards
-                document.querySelectorAll('.card').forEach(function (card, index) {
-                    card.addEventListener('click', function () {
-                        var item = data[index];
-                        var imgSrc = card.querySelector('img').src;
-                        showModal(item, imgSrc);
-                    });
-                });
+                // Populate the HTML with the JSON data
+                populateMenu(data);
             });
+
+        // Function to populate the menu with JSON data
+        function populateMenu(data) {
+            const categories = {
+                "Appetizers": document.getElementById('appetizers-content'),
+                "Sashimi": document.getElementById('sashimi-content'),
+                "Rolls": document.getElementById('rolls-content'),
+                "Desserts": document.getElementById('dessert-content'),
+                "Drinks": document.getElementById('drinks-content')
+            };
+
+            Object.keys(categories).forEach(category => {
+                const categoryItems = data.filter(item => item.category === category);
+                let cardDeck = document.createElement('div');
+                cardDeck.className = 'card-deck';
+
+                categoryItems.forEach((item, index) => {
+                    if (index > 0 && index % 3 === 0) {
+                        categories[category].appendChild(cardDeck);
+                        cardDeck = document.createElement('div');
+                        cardDeck.className = 'card-deck';
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <img class="card-img-top" src="${item.image}" alt="${item.name}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">${item.name}</h5>
+                                <p class="card-text mb-0">${item.price}</p>
+                            </div>
+                        </div>
+                    `;
+                    card.addEventListener('click', function () {
+                        showModal(item, item.image);
+                    });
+                    cardDeck.appendChild(card);
+                });
+
+                categories[category].appendChild(cardDeck);
+            });
+        }
 
         // Function to show the main modal with item details
         function showModal(item, imgSrc) {
@@ -79,21 +116,21 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             document.body.insertAdjacentHTML('beforeend', modalContent);
             $('#itemModal').modal('show');
-        
+
             // Adjust padding-right when modal is shown
             document.body.style.paddingRight = '0px';
-        
+
             $('#itemModal').on('hidden.bs.modal', function () {
                 document.getElementById('itemModal').remove();
                 // Reset padding-right when modal is hidden
                 document.body.style.paddingRight = '';
             });
-        
+
             // Add event listeners for the buttons
             document.getElementById('customizeItem').addEventListener('click', function () {
                 showCustomizeModal(item);
             });
-        
+
             document.getElementById('addItem').addEventListener('click', function () {
                 var quantity = document.getElementById('itemQuantity').value;
                 // Logic to add the item with the specified quantity
@@ -104,12 +141,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }));
                 $('#itemModal').modal('hide'); // Close the modal
             });
-        
+
             document.getElementById('increaseQuantity').addEventListener('click', function () {
                 var quantityInput = document.getElementById('itemQuantity');
                 quantityInput.value = parseInt(quantityInput.value) + 1;
             });
-        
+
             document.getElementById('decreaseQuantity').addEventListener('click', function () {
                 var quantityInput = document.getElementById('itemQuantity');
                 if (quantityInput.value > 1) {
@@ -117,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-        
+
         // Function to show the customize modal with ingredients
         function showCustomizeModal(item) {
             var ingredientsCheckboxes = item.removableIngredients.map(ingredient => `
@@ -128,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </label>
                 </div>
             `).join('');
-        
+
             var customizeModalContent = `
                 <div class="modal fade" id="customizeModal" tabindex="-1" role="dialog" aria-labelledby="customizeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -157,28 +194,28 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             document.body.insertAdjacentHTML('beforeend', customizeModalContent);
             $('#customizeModal').modal('show');
-        
+
             // Adjust padding-right when modal is shown
             document.body.style.paddingRight = '0px';
-        
+
             $('#customizeModal').on('hidden.bs.modal', function () {
                 document.getElementById('customizeModal').remove();
                 // Reset padding-right when modal is hidden
                 document.body.style.paddingRight = '';
             });
-        
+
             document.getElementById('saveCustomizations').addEventListener('click', function () {
                 // Get unchecked ingredients
                 var uncheckedIngredients = Array.from(document.querySelectorAll('.form-check-input:not(:checked)')).map(input => input.value);
                 var specialRequests = document.getElementById('customSpecialRequests').value;
-        
+
                 // Logic to save customizations
                 alert('Customizations saved: ' + JSON.stringify({
                     name: item.name,
                     uncheckedIngredients: uncheckedIngredients,
                     specialRequests: specialRequests
                 }));
-        
+
                 $('#customizeModal').modal('hide'); // Close the modal
             });
         }

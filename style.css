@@ -65,19 +65,23 @@ body, html {
     text-align: center;
     border-radius: 0.35rem;
 }
+.card-deck{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
 .card {
     background-color: white;
     border-radius: 10px;
     border: 1px solid #ddd;
     padding: 20px; /* Padding inside the card */
     margin-bottom: 20px; /* Space between cards */
+    flex: 1 1 calc(33.333% - 20px);
 }
 
 .card-body {
     font-size: 1.25rem;
-}
-.card-deck{
-    width: 100%;
 }
 .tab-pane{
     margin-left: 15px;
