@@ -87,8 +87,8 @@ body, html {
 }
 .card-title {
     margin-bottom: 0; /* Remove bottom margin */
-    font-size: 1.25rem; /* Adjust the font size */
-    line-height: 1.2; /* Adjust the line height */
+    font-size: 1.25rem;
+    line-height: 1.2; 
 }
 
 .card-price {
@@ -96,13 +96,8 @@ body, html {
     font-size: 1.25rem; /* Match the font size of the title */
 }
 
-body.modal-open {
-    overflow-y: hidden;
-    padding-right: 15px;
-}
-
 .modal-dialog {
-    max-width: 800px; /* Adjust the width as needed */
+    max-width: 800px;
 }
 
 .modal-body {
@@ -118,4 +113,18 @@ body.modal-open {
 
 .modal-body .form-group {
     flex: 1;
+}
+.item-description {
+    font-size: 1.25rem;
+    font-weight: bold; 
+}
+
+.item-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff0000;
+}
+.item-name {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
