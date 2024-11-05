@@ -274,7 +274,7 @@
         "description": "Refreshingly simple and essential.",
         "ingredients": ["Filtered water"],
         "removableIngredients": [],
-        "price": "$0.00 (Complimentary)",
+        "price": "$0.00",
         "category": "Drinks",
         "image": "./menuItemImages/Water.jpg"
     },

@@ -77,7 +77,6 @@ body, html {
     border: 1px solid #ddd;
     padding: 20px; /* Padding inside the card */
     margin-bottom: 20px; /* Space between cards */
-    flex: 1 1 calc(33.333% - 20px);
 }
 
 .card-body {
@@ -87,7 +86,9 @@ body, html {
     margin-left: 15px;
 }
 .card-img-top{
-    width: 100%
+    width: 100%;
+    height: auto;
+    object-fit: cover;
 }
 .card-title {
     margin-bottom: 0; /* Remove bottom margin */
@@ -131,4 +132,7 @@ body, html {
 .item-name {
     font-size: 1.5rem;
     font-weight: bold;
+}
+.btn-fixed-width{
+    width: 120px;
 }
