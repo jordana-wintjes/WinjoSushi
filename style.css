@@ -73,22 +73,22 @@ body, html {
 }
 .card {
     background-color: white;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    padding: 20px; /* Padding inside the card */
+    border-radius: 20px;
     margin-bottom: 20px; /* Space between cards */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .card-body {
     font-size: 1.25rem;
+    border-radius: 20px;
 }
+
 .tab-pane{
     margin-left: 15px;
 }
 .card-img-top{
-    width: 100%;
-    height: auto;
-    object-fit: cover;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 .card-title {
     margin-bottom: 0; /* Remove bottom margin */
@@ -97,8 +97,8 @@ body, html {
 }
 
 .card-price {
-    margin-bottom: 0; /* Remove bottom margin */
-    font-size: 1.25rem; /* Match the font size of the title */
+    margin-bottom: 0;
+    font-size: 1.25rem;
 }
 
 .modal-dialog {
