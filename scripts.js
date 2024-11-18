@@ -59,10 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     card.innerHTML = `
                         <img class="card-img-top" src="${item.image}" alt="${item.name}">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0">${item.name}</h5>
-                                <p class="card-text mb-0">${item.price}</p>
-                            </div>
+                            <h5 class="card-title mb-0">${item.name}</h5>
+                            <p class="card-text mb-0">${item.price}</p>
                         </div>
                     `;
                     card.addEventListener('click', function () {
@@ -219,5 +217,137 @@ document.addEventListener('DOMContentLoaded', function () {
                 $('#customizeModal').modal('hide'); // Close the modal
             });
         }
+
+        // Function to create and show the Cart modal
+        function showCartModal() {
+            var cartModalContent = `
+                <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cartModalLabel">Cart</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Tabs -->
+                                <ul class="nav nav-tabs" id="cartTab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="current-cart-tab" data-toggle="tab" href="#current-cart" role="tab" aria-controls="current-cart" aria-selected="true">Current Cart</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="in-progress-tab" data-toggle="tab" href="#in-progress" role="tab" aria-controls="in-progress" aria-selected="false">In Progress</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="order-history-tab" data-toggle="tab" href="#order-history" role="tab" aria-controls="order-history" aria-selected="false">Order History</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="cartTabContent">
+                                    <div class="tab-pane fade show active" id="current-cart" role="tabpanel" aria-labelledby="current-cart-tab">
+                                        <!-- Current Cart content goes here -->
+                                    </div>
+                                    <div class="tab-pane fade" id="in-progress" role="tabpanel" aria-labelledby="in-progress-tab">
+                                        <!-- In Progress content goes here -->
+                                    </div>
+                                    <div class="tab-pane fade" id="order-history" role="tabpanel" aria-labelledby="order-history-tab">
+                                        <!-- Order History content goes here -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', cartModalContent);
+            $('#cartModal').modal('show');
+
+            // Adjust padding-right when modal is shown
+            document.body.style.paddingRight = '0px';
+
+            $('#cartModal').on('hidden.bs.modal', function () {
+                document.getElementById('cartModal').remove();
+                // Reset padding-right when modal is hidden
+                document.body.style.paddingRight = '';
+            });
+        }
+
+        // Function to create and show the Service modal
+        function showServiceModal() {
+            var serviceModalContent = `
+                <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="serviceModalLabel">Service</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Service content goes here -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', serviceModalContent);
+            $('#serviceModal').modal('show');
+
+            // Adjust padding-right when modal is shown
+            document.body.style.paddingRight = '0px';
+
+            $('#serviceModal').on('hidden.bs.modal', function () {
+                document.getElementById('serviceModal').remove();
+                // Reset padding-right when modal is hidden
+                document.body.style.paddingRight = '';
+            });
+        }
+
+        // Function to create and show the Pay modal
+        function showPayModal() {
+            var payModalContent = `
+                <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="payModalLabel">Pay</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Pay content goes here -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', payModalContent);
+            $('#payModal').modal('show');
+
+            // Adjust padding-right when modal is shown
+            document.body.style.paddingRight = '0px';
+
+            $('#payModal').on('hidden.bs.modal', function () {
+                document.getElementById('payModal').remove();
+                // Reset padding-right when modal is hidden
+                document.body.style.paddingRight = '';
+            });
+        }
+
+        // Add event listeners for the buttons
+        document.querySelector('.btn[data-target="#cartModal"]').addEventListener('click', showCartModal);
+        document.querySelector('.btn[data-target="#serviceModal"]').addEventListener('click', showServiceModal);
+        document.querySelector('.btn[data-target="#payModal"]').addEventListener('click', showPayModal);
     }
 });
