@@ -288,10 +288,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <!-- Service content goes here -->
+                                Are you sure you want to call a server?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                <button type="button" class="btn btn-primary" id="confirmService">Yes</button>
                             </div>
                         </div>
                     </div>
@@ -299,31 +300,35 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             document.body.insertAdjacentHTML('beforeend', serviceModalContent);
             $('#serviceModal').modal('show');
-
+        
             // Adjust padding-right when modal is shown
             document.body.style.paddingRight = '0px';
-
+        
             $('#serviceModal').on('hidden.bs.modal', function () {
                 document.getElementById('serviceModal').remove();
                 // Reset padding-right when modal is hidden
                 document.body.style.paddingRight = '';
             });
+        
+            document.getElementById('confirmService').addEventListener('click', function () {
+                $('#serviceModal').modal('hide');
+                showServerConfirmationModal();
+            });
         }
-
-        // Function to create and show the Pay modal
-        function showPayModal() {
-            var payModalContent = `
-                <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+        
+        function showServerConfirmationModal() {
+            var confirmationModalContent = `
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="payModalLabel">Pay</h5>
+                                <h5 class="modal-title" id="confirmationModalLabel">Service</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <!-- Pay content goes here -->
+                                A server will be right with you. Thank you!
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -332,18 +337,94 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>
             `;
-            document.body.insertAdjacentHTML('beforeend', payModalContent);
-            $('#payModal').modal('show');
-
+            document.body.insertAdjacentHTML('beforeend', confirmationModalContent);
+            $('#confirmationModal').modal('show');
+        
             // Adjust padding-right when modal is shown
             document.body.style.paddingRight = '0px';
-
-            $('#payModal').on('hidden.bs.modal', function () {
-                document.getElementById('payModal').remove();
+        
+            $('#confirmationModal').on('hidden.bs.modal', function () {
+                document.getElementById('confirmationModal').remove();
                 // Reset padding-right when modal is hidden
                 document.body.style.paddingRight = '';
             });
         }
+
+        // Function to create and show the Pay modal
+// Function to create and show the Pay modal
+function showPayModal() {
+    var payModalContent = `
+        <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="payModalLabel">Pay</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you are ready to pay?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-primary" id="confirmPay">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', payModalContent);
+    $('#payModal').modal('show');
+
+    // Adjust padding-right when modal is shown
+    document.body.style.paddingRight = '0px';
+
+    $('#payModal').on('hidden.bs.modal', function () {
+        document.getElementById('payModal').remove();
+        // Reset padding-right when modal is hidden
+        document.body.style.paddingRight = '';
+    });
+
+    document.getElementById('confirmPay').addEventListener('click', function () {
+        $('#payModal').modal('hide');
+        showPayConfirmationModal();
+    });
+}
+
+function showPayConfirmationModal() {
+    var confirmationModalContent = `
+        <div class="modal fade" id="payConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="payConfirmationModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="payConfirmationModalLabel">Pay</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        A server will be right with you. Please prepare your preferred payment method.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', confirmationModalContent);
+    $('#payConfirmationModal').modal('show');
+
+    // Adjust padding-right when modal is shown
+    document.body.style.paddingRight = '0px';
+
+    $('#payConfirmationModal').on('hidden.bs.modal', function () {
+        document.getElementById('payConfirmationModal').remove();
+        // Reset padding-right when modal is hidden
+        document.body.style.paddingRight = '';
+    });
+}
 
         // Add event listeners for the buttons
         document.querySelector('.btn[data-target="#cartModal"]').addEventListener('click', showCartModal);
