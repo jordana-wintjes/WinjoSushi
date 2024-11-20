@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function showCartModal() {
             var cartModalContent = `
                 <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="cartModalLabel">Cart</h5>
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function showServiceModal() {
             var serviceModalContent = `
                 <div class="modal fade" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="serviceModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="serviceModalLabel">Service</h5>
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function showServerConfirmationModal() {
             var confirmationModalContent = `
                 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="confirmationModalLabel">Service</h5>
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function showPayModal() {
     var payModalContent = `
         <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="payModalLabel">Pay</h5>
@@ -396,7 +396,7 @@ function showPayModal() {
 function showPayConfirmationModal() {
     var confirmationModalContent = `
         <div class="modal fade" id="payConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="payConfirmationModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="payConfirmationModalLabel">Pay</h5>
