@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Add event listeners for the buttons
             document.getElementById('customizeItem').addEventListener('click', function () {
+                $('#itemModal').modal('hide');
                 showCustomizeModal(item);
             });
 
