@@ -1,60 +1,103 @@
-body, html {
-    height: calc(100vh - 60px); 
+#debugInfo {
+    font-size: 1rem !important;
+}
+
+/* Base Styles */
+html, body {
+    height: calc(100vh - 60px);
     width: calc(100vw - 15px);
     margin: 0;
     background-color: white;
 }
+
+/* Layout Containers */
 .light-grey-background {
-    background-color: #e9ecef; /* Light grey background */
+    background-color: #e9ecef;
     height: calc(100vh - 80px);
     overflow-y: auto;
     padding-right: 5px;
     padding-bottom: 20px;
 }
-/* Style the scrollbar for the light-grey-background */
+
+/* Scrollbar Styles */
 .light-grey-background::-webkit-scrollbar {
-    width: 16px; /* Width of the scrollbar */
+    width: 16px;
 }
 
 .light-grey-background::-webkit-scrollbar-thumb {
-    background-color: #888; /* Color of the scrollbar thumb */
-    border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+    background-color: #888;
+    border-radius: 10px;
 }
 
 .light-grey-background::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* Color of the scrollbar thumb on hover */
+    background-color: #555;
 }
 
+/* Logo */
 .winjoLogo {
     width: 350px;
     margin-left: 10px;
 }
-.card-deck{
+
+/* Card Styles */
+.card-deck {
     padding-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
-/* For the menu on the left side of the page */
+.card {
+    background-color: white;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    font-size: 1.25rem;
+    border-radius: 20px;
+}
+
+.card-img-top {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.card-title {
+    margin-bottom: 0;
+    font-size: 1.25rem;
+    line-height: 1.2;
+}
+
+.card-price {
+    margin-bottom: 0;
+    font-size: 1.25rem;
+}
+
+/* Menu List Styles */
 .list-group-item {
     background-color: white;
     border: 1px solid #E5383B;
-    font-size: 1.25rem; /* Adjust the font size as needed */
+    font-size: 1.25rem;
     padding: 1rem 1.5rem;
-    color: #495057; /* Slightly darker grey text color */
+    color: #495057;
 }
 
 .list-group-item:hover {
-    background-color: rgba(229, 56, 59, 0.2); /* More transparent red */
-    color: #E5383B; /* Red text color on hover */
+    background-color: rgba(229, 56, 59, 0.2);
+    color: #E5383B;
     border-color: #E5383B;
 }
 
-/* Specific styles for active items */
 .list-group-item.active {
-    background-color: rgba(229, 56, 59, 0.2); /* More transparent red */
-    color: #E5383B; /* Red text color when active */
+    background-color: rgba(229, 56, 59, 0.2);
+    color: #E5383B;
     border-color: #E5383B;
 }
 
+/* Button Styles */
 .menu-btn-custom {
     display: block;
     width: 195px;
@@ -65,74 +108,422 @@ body, html {
     text-align: center;
     border-radius: 0.35rem;
 }
-.card-deck{
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-.card {
-    background-color: white;
-    border-radius: 20px;
-    margin-bottom: 20px; /* Space between cards */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+
+.btn-fixed-width {
+    width: 120px;
 }
 
-.card-body {
-    font-size: 1.25rem;
-    border-radius: 20px;
-}
-
-.tab-pane{
+/* Tab Styles */
+.tab-pane {
     margin-left: 15px;
 }
-.card-img-top{
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-}
-.card-title {
-    margin-bottom: 0; /* Remove bottom margin */
-    font-size: 1.25rem;
-    line-height: 1.2; 
-}
 
-.card-price {
-    margin-bottom: 0;
-    font-size: 1.25rem;
-}
-
+/* Modal Styles */
 .modal-dialog {
     max-width: 800px;
 }
 
-.modal-body {
+.modal-content {
+    background-color: #E7D8C9;
+    border-radius: 8px;
+    padding: 25px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-content-grid {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.modal-body img {
-    max-width: 100%;
-    height: auto;
-    margin-right: 20px;
+/* Top section with two columns */
+.top-section {
+    display: flex;
+    gap: 15px;
 }
 
-.modal-body .form-group {
+.image-column {
+    flex: 0 0 40%;
+}
+
+.info-column {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
-.item-description {
-    font-size: 1.25rem;
-    font-weight: bold; 
+
+.item-image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.modal-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.confirm-modal {
+    text-align: center;
+    width: 100%;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 20px 0;
 }
 
 .item-price {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ff0000;
+    font-size: 2rem;
+    font-weight: normal;
+    margin: 0;
 }
-.item-name {
+
+.item-description {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Ingredients section */
+.ingredients-section {
+    width: 100%;
+}
+
+.ingredients-section h6 {
     font-size: 1.5rem;
+    margin-bottom: 5px;
     font-weight: bold;
 }
-.btn-fixed-width{
-    width: 120px;
+
+.ingredients-list {
+    display: flex;
+    flex-direction: column; /* Change to column to stack vertically */
+    gap: 8px; /* Space between ingredients */
+}
+
+.ingredients-list div {
+    font-size: 0.9rem;
+}
+
+/* Quantity section */
+.quantity-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.quantity-section span {
+    font-size: 0.9rem;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quantity-button {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-input {
+    width: 20px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 0.9rem;
+}
+
+/* Button group */
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.button {
+    padding: 6px 15px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.button-cancel {
+    background-color: #f0f0f0;
+}
+
+.button-modify {
+    background-color: #f0f0f0;
+}
+
+.button-add {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+}
+
+.customize-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Higher than Bootstrap's modal z-index */
+}
+
+.customize-modal-content {
+    background-color: #f5e6da;
+    border-radius: 8px;
+    padding: 25px;
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px;
+}
+
+.customize-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.customize-content-grid {
+    display: grid;
+    grid-template-columns: 40% 1fr;
+    gap: 25px;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.item-image-container {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.requests-title {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.other-requests {
+    flex-grow: 1;
+}
+
+.other-requests textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 100px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.customize-header {
+    margin-bottom: 25px;
+}
+
+.customize-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.customize-ingredients {
+    flex-grow: 1;
+}
+
+.ingredient-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 5px 0;
+}
+
+.ingredient-name {
+    font-size: 1rem;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.quantity-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.quantity-value {
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.done-btn {
+    padding: 8px 20px;
+    border-radius: 4px;
+    border: 1px solid #000;
+    background: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.done-btn:hover {
+    background-color: #f5f5f5;
+}
+
+@media (max-width: 640px) {
+    .customize-content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-image-container {
+        aspect-ratio: 16/9;
+    }
+}
+
+.receipt {
+    background-color: #f4e4d4; /* Matching the beige color from the image */
+    padding: 20px;
+    font-family: monospace;
+    width: 100%;
+}
+
+.receipt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.receipt-table th,
+.receipt-table td {
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.receipt-table th {
+    font-weight: normal;
+    border-bottom: 1px solid #000;
+}
+
+/* Column widths to match the image */
+.time-col {
+    width: 15%;
+}
+
+.item-col {
+    width: 45%;
+}
+
+.price-col {
+    width: 20%;
+}
+
+.quantity-col {
+    width: 20%;
+}
+
+/* Modification rows (for removedIngredients and specialInstructions) */
+.modification-row td {
+    padding-top: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Remove any remaining card styles */
+.card, .card-header, .card-body {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Optional: Add some spacing between orders if needed */
+.receipt-table tr:not(:last-child) {
+    border-bottom: none;
 }
