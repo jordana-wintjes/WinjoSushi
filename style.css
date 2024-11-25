@@ -10,6 +10,17 @@ html, body {
     background-color: white;
 }
 
+.btn-primary {
+    background-color: #F9C74F !important;
+    border-style: solid;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: none;
+    border: red 1px !important;
+}
+
 /* Layout Containers */
 .light-grey-background {
     background-color: #e9ecef;
