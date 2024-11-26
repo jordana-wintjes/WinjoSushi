@@ -10,6 +10,17 @@ html, body {
     background-color: white;
 }
 
+.btn-primary {
+    background-color: #F9C74F !important;
+    border-style: solid;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: none;
+    border: red 1px !important;
+}
+
 /* Layout Containers */
 .light-grey-background {
     background-color: #e9ecef;
@@ -48,10 +59,11 @@ html, body {
     justify-content: space-between;
 }
 
+
 .card {
     background-color: white;
     border-radius: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Space between cards */
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -549,15 +561,6 @@ html, body {
     padding-top: 0;
     font-size: 12px;
     color: #666;
-}
-
-/* Remove any remaining card styles */
-.card, .card-header, .card-body {
-    background: none;
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    margin: 0;
 }
 
 /* Optional: Add some spacing between orders if needed */

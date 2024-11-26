@@ -576,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
             // Initialize the modal
             $('#cartModal').modal({
-                backdrop: 'static',
+                backdrop: true,
                 keyboard: false
             });
     
@@ -979,7 +979,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const $confirmationModal = $('#orderConfirmationModal');
         
         $confirmationModal.modal({
-            backdrop: 'static',
+            backdrop: true,
             keyboard: false
         });
     
