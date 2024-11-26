@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <img src="${item.image}" alt="${item.name}" class="item-image">
                             </div>
                             <div class="other-requests">
-                                <h2 class="requests-title">Other Requests</h2>
+                                <h2 class="requests-title">Special Requests</h2>
                                 <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
                             </div>
                         </div>
