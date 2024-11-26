@@ -76,6 +76,43 @@ html, body {
     font-size: 1.25rem;
 }
 
+#cartTab{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+
+}
+
+.cartItems{
+    overflow-y: scroll;
+    max-height: 200px;
+}
+
+#cartTabContent{
+    background-color: #D7BFA6;
+    border-radius: 10px;
+    padding: 20px
+}
+
+.nav-link{
+    border-radius: 5px;
+    background-color: #F9C74F;
+    color: black;
+}
+
+.nav-link:active{
+    background-color: #E5383B;
+    color:black;
+}
+
+.cart-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 20px;
+}
+
 /* Menu List Styles */
 .list-group-item {
     background-color: white;

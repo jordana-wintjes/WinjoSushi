@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <li class="nav-item">
                                         <a class="nav-link active" id="current-cart-tab" data-toggle="tab" href="#current-cart" role="tab">Current Cart</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item">  
                                         <a class="nav-link" id="in-progress-tab" data-toggle="tab" href="#in-progress" role="tab">In Progress</a>
                                     </li>
                                     <li class="nav-item">
@@ -532,16 +532,18 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </li>
                                 </ul>
                                 <div class="tab-content mt-3" id="cartTabContent">
-                                    <div class="tab-pane fade show active" id="current-cart" role="tabpanel">
+                                    <div class="tab-pane fade show active cartItems" id="current-cart" role="tabpanel">
                                         ${generateCartContent(currentCart)}
                                     </div>
-                                    <div class="tab-pane fade" id="in-progress" role="tabpanel">
+                                    <div class="tab-pane fade cartItems" id="in-progress" role="tabpanel">
                                         ${generateOrdersList(inProgressOrders)}
                                     </div>
-                                    <div class="tab-pane fade" id="order-history" role="tabpanel">
+                                    <div class="tab-pane fade cartItems" id="order-history" role="tabpanel">
                                         ${generateOrdersList(pastOrders)}
                                     </div>
                                 </div>
+                            </div>
+                            <div id="cart-total" class="mt-3">
                             </div>
                             <div class="modal-footer border-0">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -655,7 +657,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 <h6>${item.name}</h6>
                 <p>Quantity: ${item.quantity}</p>
                 <p>Price: $${item.price}</p>
-                <p>Subtotal: $${item.subtotal}</p>
                 ${item.removedIngredients && item.removedIngredients.length > 0 ? 
                     `<p>${item.removedIngredients.join(', ')}</p>` : ''}
                 ${item.specialInstructions ? 
@@ -663,6 +664,12 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `).join('');
 
+        const total = document.getElementById('cart-total');
+
+        //total.innerHTML += ' <h5>Subtotal: $${cart.subtotal}</h5> <h5>Tax: $${cart.tax}</h5> <h4>Total: $${cart.total}</h4>'
+
+
+        /*
         content += `
             <div class="cart-total mt-3">
                 <h5>Subtotal: $${cart.subtotal}</h5>
@@ -670,6 +677,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <h4>Total: $${cart.total}</h4>
             </div>
         `;
+        */
 
         return content;
     }
