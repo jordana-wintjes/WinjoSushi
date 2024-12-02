@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <img src="${item.image}" alt="${item.name}" class="item-image">
                             </div>
                             <div class="other-requests">
-                                <h2 class="requests-title">Other Requests</h2>
+                                <h2 class="requests-title">Special Requests</h2>
                                 <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
                             </div>
                         </div>
@@ -541,12 +541,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body" id="cart-body">
                                 <ul class="nav nav-tabs" id="cartTab" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link active" id="current-cart-tab" data-toggle="tab" href="#current-cart" role="tab">Current Cart</a>
                                     </li>
-                                    <li class="nav-item">
+                                    <li class="nav-item">  
                                         <a class="nav-link" id="in-progress-tab" data-toggle="tab" href="#in-progress" role="tab">In Progress</a>
                                     </li>
                                     <li class="nav-item">
@@ -556,20 +556,32 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="tab-content mt-3" id="cartTabContent">
                                     <div class="tab-pane fade show active" id="current-cart" role="tabpanel">
                                         ${generateCartContent(currentCart)}
+                                        <div id="cart-total" class="mt-3">
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            ${currentCart && currentCart.items && currentCart.items.length > 0 ? 
+                                                `<button type="button" class="btn btn-primary" id="place-order-btn">Place Order</button>` : 
+                                            ''}
+                                        </div>
                                     </div>
                                     <div class="tab-pane fade" id="in-progress" role="tabpanel">
-                                        ${generateOrdersList(inProgressOrders)}
+                                        <div class="orders">
+                                            ${generateOrdersList(inProgressOrders)}
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
                                     <div class="tab-pane fade" id="order-history" role="tabpanel">
+                                        <div class="orders">
                                         ${generateOrdersList(pastOrders)}
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer border-0">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                ${currentCart && currentCart.items && currentCart.items.length > 0 ? 
-                                    `<button type="button" class="btn btn-primary" id="place-order-btn">Place Order</button>` : 
-                                ''}
                             </div>
                         </div>
                     </div>
@@ -647,6 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             `<div>Modified ingredients: ${item.ingredientModifications.map(ing => 
                                                 `${ing.name}: ${ing.quantity}`
                                             ).join(', ')}</div>` : ''}
+
                                         ${item.specialInstructions ? 
                                             `<div>Special: ${item.specialInstructions}</div>` : ''}
                                     </td>
@@ -673,32 +686,66 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!cart || !cart.items || cart.items.length === 0) {
             return '<p>Your cart is empty</p>';
         }
+
+        let content = 
+        `<table class="receipt-table">
+            <thead>
+                <tr>
+                    <th class="item-col">Item</th>
+                    <th class="price-col">Price</th>
+                    <th class="quantity-col">Quantity</th>
+                </tr>
+            </thead>
+            <tbody class="cartItems">
+                ${cart.items.map(item => `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>$${item.price.toFixed(2)}</td>
+                         <td>
+                            <div class="quantity-control">
+                                <button class="quantity-button decrease-btn" data-item="${item.name}">-</button>
+                                <span class="quantity-value">${item.quantity}</span>
+                                <button class="quantity-button increase-btn" data-item="${item.name}">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                    ${(item.removedIngredients && item.removedIngredients.length > 0) || item.specialInstructions ? `
+                    <tr class="modification-row">
+                        <td colspan="4">
+                            ${item.ingredientModifications && item.ingredientModifications.length > 0 ? 
+                              `<p>Modified ingredients: ${item.ingredientModifications.map(ing => 
+                                  `${ing.name}: ${ing.quantity}`
+                              ).join(', ')}</p>` : ''}
+                          ${item.specialInstructions ? 
+                              `<p>Special: ${item.specialInstructions}</p>` : ''}
+                        </td>
+                    </tr>
+                    ` : ''}
+                    `).join('')}
+            </tbody>
+        </table>`;
+
+        setTimeout(() => {
+            document.getElementById("cart-total").insertAdjacentHTML('beforeend',  `<hr><div class="cartCost"><h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5> <h5>Tax: $${cart.tax.toFixed(2)}</h5> <h4>Total: $${cart.total.toFixed(2)}</h4></div>`)
     
-        let content = cart.items.map(item => `
-            <div class="cart-item">
-                <h6>${item.name}</h6>
-                <p>Quantity: ${item.quantity}</p>
-                <p>Price: $${item.price}</p>
-                <p>Subtotal: $${item.subtotal}</p>
-                ${item.ingredientModifications && item.ingredientModifications.length > 0 ? 
-                    `<p>Modified ingredients: ${item.ingredientModifications.map(ing => 
-                        `${ing.name}: ${ing.quantity}`
-                    ).join(', ')}</p>` : ''}
-                ${item.specialInstructions ? 
-                    `<p>Special: ${item.specialInstructions}</p>` : ''}
-            </div>
-        `).join('');
+            document.querySelectorAll('.decrease-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    //stuff for decreasing quantity
+                });
+            });
     
-        content += `
-            <div class="cart-total mt-3">
-                <h5>Subtotal: $${cart.subtotal}</h5>
-                <h5>Tax: $${cart.tax}</h5>
-                <h4>Total: $${cart.total}</h4>
-            </div>
-        `;
+            document.querySelectorAll('.increase-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    //stuff for increasing quantity
+                });
+            });
+        }, 0);
     
         return content;
     }
+    
+    
+
 
     function showServiceModal() {
         // Remove any existing service modal
