@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var lightGreyBackground = document.getElementById('lightGreyBackground');
     const API_BASE_URL = 'http://localhost:7853/api';
     let currentUser = null;
+    let storedIngredientQuantities = [];
 
     // Cookie management functions
     function setCookie(name, value, days) {
@@ -185,8 +186,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     userId: currentUser._id,
                     itemId: item._id,
                     quantity: parseInt(quantity),
-                    removedIngredients: removedIngredients,  // Send the array
-                    specialInstructions: specialRequests
+                    specialInstructions: specialRequests,
+                    ingredientQuantities: storedIngredientQuantities
                 })
             });
     
@@ -305,11 +306,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('addItem').addEventListener('click', async function () {
             var quantity = document.getElementById('itemQuantity').value;
+
+            console.log('Adding item with ingredient quantities:', storedIngredientQuantities);
+
             try {
                 // Handle uncheckedIngredients properly
                 const removedIngredients = Array.isArray(item.uncheckedIngredients) 
                     ? item.uncheckedIngredients 
                     : (item.uncheckedIngredients ? [item.uncheckedIngredients] : []);
+                    
                     
                 await addItemToCart(
                     item,
@@ -319,6 +324,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
                 resetCustomizations(item);
                 $('#itemModal').modal('hide');
+
+                // Reset the stored quantities after we're done with them
+                storedIngredientQuantities = [];
                 
                 // Remove any existing confirmation modal
                 const existingConfirmation = document.getElementById('itemAddedConfirmation');
@@ -369,6 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
             } catch (error) {
                 console.error('Error adding item:', error);
+                storedIngredientQuantities = [];
             }
         });
 
@@ -472,6 +481,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // Handle done button
         const doneBtn = modal.querySelector('.done-btn');
         doneBtn.addEventListener('click', () => {
+            const currentIngredientRows = modal.querySelectorAll('.ingredient-row');
+            storedIngredientQuantities = Array.from(currentIngredientRows)
+                .map(row => ({
+                    name: row.querySelector('.ingredient-name').textContent,
+                    quantity: parseInt(row.querySelector('.quantity-value').textContent)
+                }))
+                .filter(item => item.quantity !== 1);  // Only keep items where quantity is not 1
+            
+            console.log('Stored ingredient quantities:', storedIngredientQuantities);
+
+
             // Collect unchecked ingredients (quantity = 0)
             const uncheckedIngredients = [];
             ingredientRows.forEach(row => {
@@ -488,6 +508,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const customizedItem = { ...item };
             customizedItem.uncheckedIngredients = uncheckedIngredients; // Store as array
             customizedItem.specialRequests = specialRequests;
+
+            
 
             // Close customize modal and show main modal
             modal.remove();
@@ -598,7 +620,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return '<p class="text-center my-3">No orders found</p>';
         }
     
-        // Create a single receipt containing all orders
         return `
             <div class="receipt">
                 <table class="receipt-table">
@@ -619,11 +640,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <td>$${item.price.toFixed(2)}</td>
                                     <td>${item.quantity}</td>
                                 </tr>
-                                ${(item.removedIngredients && item.removedIngredients.length > 0) || item.specialInstructions ? `
+                                ${(item.ingredientModifications && item.ingredientModifications.length > 0) || item.specialInstructions ? `
                                 <tr class="modification-row">
                                     <td colspan="4">
-                                        ${item.removedIngredients && item.removedIngredients.length > 0 ? 
-                                            `<div>${item.removedIngredients.join(', ')}</div>` : ''}
+                                        ${item.ingredientModifications && item.ingredientModifications.length > 0 ? 
+                                            `<div>Modified ingredients: ${item.ingredientModifications.map(ing => 
+                                                `${ing.name}: ${ing.quantity}`
+                                            ).join(', ')}</div>` : ''}
                                         ${item.specialInstructions ? 
                                             `<div>Special: ${item.specialInstructions}</div>` : ''}
                                     </td>
@@ -636,6 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
     }
+    
     // Helper function to format order dates
     function formatOrderDate(order) {
         if (order.status === 'in_progress') {
@@ -649,20 +673,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!cart || !cart.items || cart.items.length === 0) {
             return '<p>Your cart is empty</p>';
         }
-
+    
         let content = cart.items.map(item => `
             <div class="cart-item">
                 <h6>${item.name}</h6>
                 <p>Quantity: ${item.quantity}</p>
                 <p>Price: $${item.price}</p>
                 <p>Subtotal: $${item.subtotal}</p>
-                ${item.removedIngredients && item.removedIngredients.length > 0 ? 
-                    `<p>${item.removedIngredients.join(', ')}</p>` : ''}
+                ${item.ingredientModifications && item.ingredientModifications.length > 0 ? 
+                    `<p>Modified ingredients: ${item.ingredientModifications.map(ing => 
+                        `${ing.name}: ${ing.quantity}`
+                    ).join(', ')}</p>` : ''}
                 ${item.specialInstructions ? 
                     `<p>Special: ${item.specialInstructions}</p>` : ''}
             </div>
         `).join('');
-
+    
         content += `
             <div class="cart-total mt-3">
                 <h5>Subtotal: $${cart.subtotal}</h5>
@@ -670,7 +696,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <h4>Total: $${cart.total}</h4>
             </div>
         `;
-
+    
         return content;
     }
 
@@ -686,9 +712,9 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="modal fade" id="serviceConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-                        <div class="modal-body">
+                        <div class="modal-body d-flex align-items-center justify-content-center min-vh-50">
                             <div class="text-center">
-                                <h2 class="font-weight-bold">Are you sure you want to call a server?</h2>
+                                <h2 class="font-weight-bold">Are you sure you want to call a Server?</h2>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
@@ -733,14 +759,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header border-0">
-                            <h5 class="modal-title confirm-modal">A Server will be right with you</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body d-flex align-items-center justify-content-center min-vh-50">
                             <div class="text-center">
-                                <h2 class="font-weight-bold">Thank you!</h2>
+                                <h2 class="font-weight-bold">A Server will be right with you.</h2>
+                                <h2 class="font-weight-bold">Thank you.</h2>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
@@ -782,12 +808,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header border-0">
-                            <h5 class="modal-title confirm-modal">Confirm Payment</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body d-flex align-items-center justify-content-center min-vh-50">
                             <div class="text-center">
                                 <h2 class="font-weight-bold">Are you sure you are ready to pay?</h2>
                             </div>
@@ -834,13 +859,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header border-0">
-                            <h5 class="modal-title confirm-modal">A Server will be right with you.</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body d-flex align-items-center justify-content-center min-vh-50">
                             <div class="text-center">
+                                <h2 class="font-weight-bold">A Server will be right with you.</h2>
                                 <h2 class="font-weight-bold">Please prepare your preferred payment method.</h2>
                             </div>
                         </div>
@@ -1006,6 +1031,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     _id: item._id,
                     ingredients: item.ingredients,
                     removableIngredients: item.removableIngredients,
+                    additionalIngredients: item.additionalIngredients,
                     allergens: item.allergens
                 }));
 

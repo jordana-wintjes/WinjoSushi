@@ -59,6 +59,10 @@ html, body {
     justify-content: space-between;
 }
 
+.service-btn {
+    margin-left: 10px;
+}
+
 
 .card {
     background-color: white;
@@ -133,11 +137,13 @@ html, body {
 /* Modal Styles */
 .modal-dialog {
     max-width: 800px;
+    
 }
 
 .modal-content {
     background-color: #E7D8C9;
     border-radius: 8px;
+    min-height: 500px;
     padding: 25px;
     position: relative;
 }
@@ -519,14 +525,12 @@ html, body {
     width: 20%;
 }
 
-/* Modification rows (for removedIngredients and specialInstructions) */
 .modification-row td {
     padding-top: 0;
     font-size: 12px;
     color: #666;
 }
 
-/* Optional: Add some spacing between orders if needed */
 .receipt-table tr:not(:last-child) {
     border-bottom: none;
 }
