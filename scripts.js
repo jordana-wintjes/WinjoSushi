@@ -635,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <tr class="modification-row">
                                     <td colspan="4">
                                         ${item.removedIngredients && item.removedIngredients.length > 0 ? 
-                                            `<div>${item.removedIngredients.join(', ')}</div>` : ''}
+                                            `<div>No ${item.removedIngredients.join(', ')}</div>` : ''}
                                         ${item.specialInstructions ? 
                                             `<div>Special: ${item.specialInstructions}</div>` : ''}
                                     </td>
@@ -688,7 +688,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <tr class="modification-row">
                         <td colspan="4">
                             ${item.removedIngredients && item.removedIngredients.length > 0 ? 
-                                `<div>${item.removedIngredients.join(', ')}</div>` : ''}
+                                `<div>No ${item.removedIngredients.join(', ')}</div>` : ''}
                             ${item.specialInstructions ? 
                                 `<div>Special: ${item.specialInstructions}</div>` : ''}
                         </td>
