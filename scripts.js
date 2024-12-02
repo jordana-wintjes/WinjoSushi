@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (order.status === 'in_progress') {
             return `${new Date(order.orderPlacedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         } else {
-            return `Delivered: ${new Date(order.deliveredAt).toLocaleDateString()}`;
+            return `${new Date(order.orderPlacedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         }
     }
 
@@ -722,24 +722,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     </tr>
                     ` : ''}
                     `).join('')}
+                    <hr><div class="cartCost"><h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5>
             </tbody>
         </table>`;
 
-        setTimeout(() => {
-            document.getElementById("cart-total").insertAdjacentHTML('beforeend',  `<hr><div class="cartCost"><h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5> <h5>Tax: $${cart.tax.toFixed(2)}</h5> <h4>Total: $${cart.total.toFixed(2)}</h4></div>`)
+        // setTimeout(() => {
+        //     document.getElementById("cart-total").insertAdjacentHTML('beforeend',  `<hr><div class="cartCost"><h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5> <h5>Tax: $${cart.tax.toFixed(2)}</h5> <h4>Total: $${cart.total.toFixed(2)}</h4></div>`)
     
-            document.querySelectorAll('.decrease-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    //stuff for decreasing quantity
-                });
-            });
+        //     document.querySelectorAll('.decrease-btn').forEach(button => {
+        //         button.addEventListener('click', () => {
+        //             //stuff for decreasing quantity
+        //         });
+        //     });
     
-            document.querySelectorAll('.increase-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    //stuff for increasing quantity
-                });
-            });
-        }, 0);
+        //     document.querySelectorAll('.increase-btn').forEach(button => {
+        //         button.addEventListener('click', () => {
+        //             //stuff for increasing quantity
+        //         });
+        //     });
+        // }, 0);
     
         return content;
     }
