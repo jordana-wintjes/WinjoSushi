@@ -666,20 +666,25 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <tr>
                                     <td>${formatOrderDate(order)}</td>
                                     <td>${item.name}</td>
-                                    <td>$${item.price.toFixed(2)}</td>
+                                    <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
                                     <td>${item.quantity}</td>
                                 </tr>
-                                <tr class="modification-row">
-                                    <td colspan="4">
-                                        ${item.ingredientModifications && item.ingredientModifications.length > 0 ? 
-                                            `<div>Modified ingredients: ${item.ingredientModifications.map(ing => 
-                                                `${ing.name}: ${ing.quantity}`
-                                            ).join(', ')}</div>` : ''}
-
-                                        ${item.specialInstructions ? 
-                                            `<div>Special: ${item.specialInstructions}</div>` : ''}
-                                    </td>
-                                </tr>
+                                ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
+                                    <tr class="modification-row">
+                                        <td colspan="4">
+                                            <div class="additional-ingredients">
+                                                <p class="mb-1"><strong>Additional Ingredients:</strong></p>
+                                                ${item.additionalIngredients
+                                                    .filter(ing => ing.quantity > 0)
+                                                    .map(ing => `
+                                                        <div class="ingredient-item">
+                                                            ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
+                                                        </div>
+                                                    `).join('')}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ` : ''}
                             `).join('')
                         ).join('')}
                     </tbody>
@@ -687,6 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
     }
+    
     
     // Helper function to format order dates
     function formatOrderDate(order) {
