@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <img class="card-img-top" src="${item.image}" alt="${item.name}">
                     <div class="card-body">
                         <h5 class="card-title mb-0">${item.name}</h5>
-                        <p class="card-text mb-0">${item.price}</p>
+                        <p class="card-text mb-0">$${item.price}</p>
                     </div>
                 `;
 
@@ -172,27 +172,30 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cart management functions
     async function addItemToCart(item, quantity, uncheckedIngredients, specialRequests) {
         try {
-            // Ensure uncheckedIngredients is always an array
-            const removedIngredients = Array.isArray(uncheckedIngredients) 
-                ? uncheckedIngredients 
-                : (uncheckedIngredients ? [uncheckedIngredients] : []);
+            // Create the request body with all necessary fields
+            const requestBody = {
+                userId: currentUser._id,
+                itemId: item._id,
+                quantity: parseInt(quantity),
+                specialRequests: specialRequests || '',
+                // Include additionalIngredientsSelected if present
+                additionalIngredientsSelected: item.additionalIngredientsSelected || []
+            };
+    
+            console.log('Request body:', requestBody);
     
             const response = await fetch(`${API_BASE_URL}/carts/add-item`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    userId: currentUser._id,
-                    itemId: item._id,
-                    quantity: parseInt(quantity),
-                    specialInstructions: specialRequests,
-                    ingredientQuantities: storedIngredientQuantities
-                })
+                body: JSON.stringify(requestBody)
             });
     
             if (!response.ok) {
-                throw new Error('Failed to add item to cart');
+                const errorData = await response.json();
+                console.error('Server error:', errorData);
+                throw new Error(errorData.message || 'Failed to add item to cart');
             }
     
             const updatedCart = await response.json();
@@ -250,9 +253,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="info-column">
                                     <div class="header-row">
                                         <h5 class="modal-title">${item.name}</h5>
-                                        <h5 class="item-price">${item.price}</h5>
+                                        <h5 class="item-price">$${item.price}</h5>
                                     </div>
                                     <p class="item-description">${item.description}</p>
+                                    
                                 </div>
                             </div>
 
@@ -425,13 +429,16 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
     
                             <div class="customize-ingredients">
-                                ${item.removableIngredients ? item.removableIngredients.map(ingredient => `
-                                    <div class="ingredient-row" data-ingredient="${ingredient}">
-                                        <span class="ingredient-name">${ingredient}</span>
-                                        <div class="quantity-control">
-                                            <button class="quantity-btn decrease-btn">-</button>
-                                            <span class="quantity-value">${!item.uncheckedIngredients || !item.uncheckedIngredients.includes(ingredient) ? '1' : '0'}</span>
-                                            <button class="quantity-btn increase-btn">+</button>
+                                ${item.additionalIngredients ? item.additionalIngredients.map(addon => `
+                                    <div class="ingredient-row" data-ingredient="${addon.ingredient}" data-price="${addon.price}">
+                                        <span class="ingredient-name">${addon.ingredient}</span>
+                                        <div class="ingredient-price-quantity">
+                                            <span class="total-price"></span>
+                                            <div class="quantity-control">
+                                                <button class="quantity-btn decrease-btn">-</button>
+                                                <span class="quantity-value">0</span>
+                                                <button class="quantity-btn increase-btn">+</button>
+                                            </div>
                                         </div>
                                     </div>
                                 `).join('') : ''}
@@ -455,12 +462,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const decreaseBtn = row.querySelector('.decrease-btn');
             const increaseBtn = row.querySelector('.increase-btn');
             const quantityValue = row.querySelector('.quantity-value');
+            const totalPriceElement = row.querySelector('.total-price');
+            const priceStr = row.dataset.price;
+            const basePrice = parseFloat(priceStr.replace('$', ''));
+    
+            // Function to update total price
+            const updateTotalPrice = (quantity) => {
+                const total = (basePrice * quantity).toFixed(2);
+                totalPriceElement.textContent = `$${total}`;
+            };
     
             decreaseBtn.addEventListener('click', () => {
                 let value = parseInt(quantityValue.textContent);
                 if (value > 0) {
                     value--;
                     quantityValue.textContent = value;
+                    updateTotalPrice(value);
                 }
             });
     
@@ -468,6 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let value = parseInt(quantityValue.textContent);
                 value++;
                 quantityValue.textContent = value;
+                updateTotalPrice(value);
             });
         });
     
@@ -482,34 +500,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const doneBtn = modal.querySelector('.done-btn');
         doneBtn.addEventListener('click', () => {
             const currentIngredientRows = modal.querySelectorAll('.ingredient-row');
-            storedIngredientQuantities = Array.from(currentIngredientRows)
-                .map(row => ({
-                    name: row.querySelector('.ingredient-name').textContent,
-                    quantity: parseInt(row.querySelector('.quantity-value').textContent)
-                }))
-                .filter(item => item.quantity !== 1);  // Only keep items where quantity is not 1
-            
-            console.log('Stored ingredient quantities:', storedIngredientQuantities);
-
-
-            // Collect unchecked ingredients (quantity = 0)
-            const uncheckedIngredients = [];
-            ingredientRows.forEach(row => {
-                const quantity = parseInt(row.querySelector('.quantity-value').textContent);
-                if (quantity === 0) {
-                    uncheckedIngredients.push(row.dataset.ingredient);
-                }
-            });
+            const selectedIngredients = Array.from(currentIngredientRows)
+                .map(row => {
+                    const quantity = parseInt(row.querySelector('.quantity-value').textContent);
+                    if (quantity > 0) {
+                        return {
+                            name: row.querySelector('.ingredient-name').textContent,
+                            quantity: quantity,
+                            totalPrice: row.querySelector('.total-price').textContent
+                        };
+                    }
+                    return null;
+                })
+                .filter(ing => ing !== null);
 
             // Get special requests
             const specialRequests = modal.querySelector('textarea').value;
 
             // Create a new item object with the customizations
             const customizedItem = { ...item };
-            customizedItem.uncheckedIngredients = uncheckedIngredients; // Store as array
+            customizedItem.additionalIngredientsSelected = selectedIngredients;
             customizedItem.specialRequests = specialRequests;
-
-            
 
             // Close customize modal and show main modal
             modal.remove();
@@ -652,7 +663,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <td>$${item.price.toFixed(2)}</td>
                                     <td>${item.quantity}</td>
                                 </tr>
-                                ${(item.ingredientModifications && item.ingredientModifications.length > 0) || item.specialInstructions ? `
                                 <tr class="modification-row">
                                     <td colspan="4">
                                         ${item.ingredientModifications && item.ingredientModifications.length > 0 ? 
@@ -664,7 +674,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                             `<div>Special: ${item.specialInstructions}</div>` : ''}
                                     </td>
                                 </tr>
-                                ` : ''}
                             `).join('')
                         ).join('')}
                     </tbody>
@@ -681,12 +690,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return `${new Date(order.orderPlacedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         }
     }
+    
 
     function generateCartContent(cart) {
         if (!cart || !cart.items || cart.items.length === 0) {
             return '<p>Your cart is empty</p>';
         }
-
+    
         let content = 
         `<table class="receipt-table">
             <thead>
@@ -694,56 +704,134 @@ document.addEventListener('DOMContentLoaded', function () {
                     <th class="item-col">Item</th>
                     <th class="price-col">Price</th>
                     <th class="quantity-col">Quantity</th>
+                    <th class="remove-col"></th>
                 </tr>
             </thead>
             <tbody class="cartItems">
                 ${cart.items.map(item => `
                     <tr>
                         <td>${item.name}</td>
-                        <td>$${item.price.toFixed(2)}</td>
-                         <td>
+                        <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
+                        <td>
                             <div class="quantity-control">
-                                <button class="quantity-button decrease-btn" data-item="${item.name}">-</button>
                                 <span class="quantity-value">${item.quantity}</span>
-                                <button class="quantity-button increase-btn" data-item="${item.name}">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="remove-item-btn">
+                                <button type="button" class="btn btn-link text-danger" onclick="showRemoveConfirmation('${cart._id}', '${item._id}', '${item.name}')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
-                    ${(item.removedIngredients && item.removedIngredients.length > 0) || item.specialInstructions ? `
-                    <tr class="modification-row">
-                        <td colspan="4">
-                            ${item.ingredientModifications && item.ingredientModifications.length > 0 ? 
-                              `<p>Modified ingredients: ${item.ingredientModifications.map(ing => 
-                                  `${ing.name}: ${ing.quantity}`
-                              ).join(', ')}</p>` : ''}
-                          ${item.specialInstructions ? 
-                              `<p>Special: ${item.specialInstructions}</p>` : ''}
-                        </td>
-                    </tr>
+                    
+                    ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
+                        <tr class="modification-row">
+                            <td colspan="4">
+                                <div class="additional-ingredients">
+                                    <p class="mb-1"><strong>Additional Ingredients:</strong></p>
+                                    ${item.additionalIngredients
+                                        .filter(ing => ing.quantity > 0)
+                                        .map(ing => `
+                                            <div class="ingredient-item">
+                                                ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
+                                            </div>
+                                        `).join('')}
+                                </div>
+                            </td>
+                        </tr>
                     ` : ''}
-                    `).join('')}
-                    <hr><div class="cartCost"><h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5>
+    
+                    ${item.specialInstructions ? `
+                        <tr class="modification-row">
+                            <td colspan="4">
+                                <p class="mb-1"><strong>Special Instructions:</strong></p>
+                                <p class="special-instructions">${item.specialInstructions}</p>
+                            </td>
+                        </tr>
+                    ` : ''}
+    
+                `).join('')}
             </tbody>
-        </table>`;
-
-        // setTimeout(() => {
-        //     document.getElementById("cart-total").insertAdjacentHTML('beforeend',  `<hr><div class="cartCost"><h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5> <h5>Tax: $${cart.tax.toFixed(2)}</h5> <h4>Total: $${cart.total.toFixed(2)}</h4></div>`)
-    
-        //     document.querySelectorAll('.decrease-btn').forEach(button => {
-        //         button.addEventListener('click', () => {
-        //             //stuff for decreasing quantity
-        //         });
-        //     });
-    
-        //     document.querySelectorAll('.increase-btn').forEach(button => {
-        //         button.addEventListener('click', () => {
-        //             //stuff for increasing quantity
-        //         });
-        //     });
-        // }, 0);
+        </table>
+        <hr>
+        <div class="cartCost">
+            <h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5>
+            <h5>Tax: $${cart.tax.toFixed(2)}</h5>
+            <h5>Total: $${cart.total.toFixed(2)}</h5>
+        </div>`;
     
         return content;
     }
+
+    window.showRemoveConfirmation = function(cartId, itemId, itemName) {
+        $('#cartModal').modal('hide');
+        const confirmationModal = `
+            <div class="modal fade" id="removeConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body d-flex align-items-center justify-content-center min-vh-50">
+                            <div class="text-center">
+                                <h2 class="font-weight-bold">Remove ${itemName} from cart?</h2>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary" id="noRemoveBtn">No</button>
+                            <button type="button" class="btn btn-danger" onclick="removeCartItem('${cartId}', '${itemId}')">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+      
+        // Remove any existing confirmation modal
+        const existingModal = document.getElementById('removeConfirmationModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        document.body.insertAdjacentHTML('beforeend', confirmationModal);
+        $('#removeConfirmationModal').modal('show');
+    
+        // Remove padding-right that Bootstrap adds
+        document.body.style.paddingRight = '0px';
+    
+        // Add event listener for the No button
+        document.getElementById('noRemoveBtn').addEventListener('click', function() {
+            $('#removeConfirmationModal').modal('hide');
+            setTimeout(() => {
+                showCartModal(); // Show the cart modal again
+            }, 100)
+        });
+    
+        $('#removeConfirmationModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css('padding-right', '');
+        });
+    };
+    
+    window.removeCartItem = async function(cartId, itemId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/carts/remove-item/${cartId}/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to remove item');
+            }
+    
+            // Refresh the cart modal to show updated cart
+            showCartModal();
+        } catch (error) {
+            console.error('Error removing item:', error);
+        }
+    };
     
     
 
@@ -1073,16 +1161,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const menuItems = items.map(item => ({
                     category: item.category,
                     name: item.name,
-                    price: `$${item.price}`,
+                    price: `${item.price}`,
                     description: item.description,
                     image: item.imageUrl,
-                    _id: item._id,
+                    _id: item.id,
                     ingredients: item.ingredients,
-                    removableIngredients: item.removableIngredients,
-                    additionalIngredients: item.additionalIngredients,
+                    additionalIngredients: item.additionalIngredients.map(addon => ({
+                        ingredient: addon.ingredient,
+                        price: addon.price
+                    })),
                     allergens: item.allergens
                 }));
-
+                console.log('Menu Items with Additional Ingredients:');
+                console.log(menuItems);
                 populateMenu(menuItems);
             })
             .catch(error => {
