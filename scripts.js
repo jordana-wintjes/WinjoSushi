@@ -3,12 +3,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const API_BASE_URL = 'http://localhost:7853/api';
     let currentUser = null;
     let storedIngredientQuantities = [];
+    let isModifying = false;
 
     // Cookie management functions
-    function setCookie(name, value, days) {
+    function setCookie(name, value) {
+        // Set cookie to expire in exactly 24 hours
         const expires = new Date();
-        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+        expires.setTime(expires.getTime() + (24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
     }
 
     function getCookie(name) {
@@ -23,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function deleteCookie(name) {
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/`;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;SameSite=Strict`;
     }
 
     function updateDebugInfo() {
@@ -31,13 +33,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (debugElement) {
             const userId = getCookie('userId');
             const timestamp = new Date().toLocaleTimeString();
+            if (!userId) {
+                deleteCookie('userId'); // Delete cookie if userId doesn't exist
+            }
             debugElement.innerHTML = `
                 User ID: ${userId || 'None'}<br>
                 Last Updated: ${timestamp}
             `;
         }
     }
-    
+        
 
     // Initialize user session
     async function initializeUser() {
@@ -302,14 +307,22 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
 
         document.body.insertAdjacentHTML('beforeend', modalContent);
-        $('#itemModal').modal('show');
+        $('#itemModal').modal({
+            backdrop: true,
+            keyboard: false
+        });
 
         document.body.style.paddingRight = '0px';
 
         $('#itemModal').on('hidden.bs.modal', function () {
             document.getElementById('itemModal').remove();
             document.body.style.paddingRight = '';
-            resetCustomizations(item);
+            // Only reset customizations if we're not modifying
+            if (!isModifying) {
+                resetCustomizations(item);
+            }
+            // Reset the flag
+            isModifying = false;
         });
         
 
@@ -332,7 +345,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     removedIngredients,
                     item.specialRequests
                 );
-                resetCustomizations(item);
+
+                item.additionalIngredientsSelected = [];
+                item.specialRequests = '';
+
                 $('#itemModal').modal('hide');
 
                 // Reset the stored quantities after we're done with them
@@ -373,7 +389,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // Show the confirmation modal
                 const $confirmationModal = $('#itemAddedConfirmation');
-                $confirmationModal.modal('show');
+                $confirmationModal.modal({
+                    backdrop: true,
+                    keyboard: false
+                });
                 
                 // Remove padding-right that Bootstrap adds
                 document.body.style.paddingRight = '0px';
@@ -393,8 +412,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Single event listener for customizeItem button
         document.getElementById('customizeItem').addEventListener('click', function () {
+            isModifying = true;  // Set the flag before hiding modal
             $('#itemModal').modal('hide');
             showCustomizeModal(item);
+        });
+
+        document.querySelector('.button-cancel').addEventListener('click', function() {
+            // Reset all customizations
+            item.additionalIngredientsSelected = [];
+            item.specialRequests = '';
+            // Hide the modal
+            $('#itemModal').modal('hide');
         });
 
         document.getElementById('increaseQuantity').addEventListener('click', function () {
@@ -412,46 +440,54 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showCustomizeModal(item) {
         const customizeModalContent = `
-            <div class="customize-modal" id="customizeModal" tabindex="-1" role="dialog">
-                <div class="customize-modal-content">
-                    <button type="button" class="customize-close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    
-                    <div class="customize-content-grid">
-                        <div class="left-column">
-                            <div class="item-image-container">
-                                <img src="${item.image}" alt="${item.name}" class="item-image">
-                            </div>
-                            <div class="other-requests">
-                                <h2 class="requests-title">Special Requests</h2>
-                                <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
-                            </div>
-                        </div>
-    
-                        <div class="right-column">
-                            <div class="customize-header">
-                                <h2 class="customize-title">${item.name}</h2>
+            <div class="modal fade" id="customizeModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <button type="button" class="close customize-close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        
+                        <div class="customize-content-grid">
+                            <div class="left-column">
+                                <div class="item-image-container">
+                                    <img src="${item.image}" alt="${item.name}" class="item-image">
+                                </div>
+                                <div class="other-requests">
+                                    <h2 class="requests-title">Special Requests</h2>
+                                    <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
+                                </div>
                             </div>
     
-                            <div class="customize-ingredients">
-                                ${item.additionalIngredients ? item.additionalIngredients.map(addon => `
-                                    <div class="ingredient-row" data-ingredient="${addon.ingredient}" data-price="${addon.price}">
-                                        <span class="ingredient-name">${addon.ingredient}</span>
-                                        <div class="ingredient-price-quantity">
-                                            <span class="total-price"></span>
-                                            <div class="quantity-control">
-                                                <button class="quantity-btn decrease-btn">-</button>
-                                                <span class="quantity-value">0</span>
-                                                <button class="quantity-btn increase-btn">+</button>
+                            <div class="right-column">
+                                <div class="customize-header">
+                                    <h2 class="customize-title">${item.name}</h2>
+                                </div>
+    
+                                <div class="customize-ingredients">
+                                    ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
+                                        const previousSelection = item.additionalIngredientsSelected ? 
+                                            item.additionalIngredientsSelected.find(selected => selected.name === addon.ingredient) : null;
+                                        const previousQuantity = previousSelection ? previousSelection.quantity : 0;
+                                        
+                                        return `
+                                            <div class="ingredient-row" data-ingredient="${addon.ingredient}" data-price="${addon.price}">
+                                                <span class="ingredient-name">${addon.ingredient}</span>
+                                                <div class="ingredient-price-quantity">
+                                                    <span class="total-price">$${(addon.price * previousQuantity).toFixed(2)}</span>
+                                                    <div class="quantity-control">
+                                                        <button class="quantity-btn decrease-btn">-</button>
+                                                        <span class="quantity-value">${previousQuantity}</span>
+                                                        <button class="quantity-btn increase-btn">+</button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                `).join('') : ''}
-                            </div>
+                                        `;
+                                    }).join('') : ''}
+                                </div>
     
-                            <div class="modal-actions">
-                                <button class="done-btn">Done</button>
+                                <div class="modal-actions">
+                                    <button class="done-btn">Done</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -459,8 +495,30 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
     
+        // Remove any existing customize modal
+        const existingModal = document.getElementById('customizeModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+    
         document.body.insertAdjacentHTML('beforeend', customizeModalContent);
         const modal = document.getElementById('customizeModal');
+    
+        // Initialize modal with Bootstrap
+        $(modal).modal({
+            backdrop: true,
+            keyboard: false
+        });
+    
+        // Remove padding-right that Bootstrap adds
+        document.body.style.paddingRight = '0px';
+    
+        // Add proper cleanup on modal hide
+        $(modal).on('hidden.bs.modal', function () {
+            $(this).remove();
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css('padding-right', '');
+        });
     
         // Handle quantity controls
         const ingredientRows = modal.querySelectorAll('.ingredient-row');
@@ -498,8 +556,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Handle close button
         const closeBtn = modal.querySelector('.customize-close');
         closeBtn.addEventListener('click', () => {
-            modal.remove();
-            showModal(item, item.image);
+            $(modal).modal('hide');
+            setTimeout(() => {
+                showModal(item, item.image);
+            }, 150); // Small delay for smooth transition
         });
     
         // Handle done button
@@ -519,21 +579,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     return null;
                 })
                 .filter(ing => ing !== null);
-
+    
             // Get special requests
             const specialRequests = modal.querySelector('textarea').value;
-
-            // Create a new item object with the customizations
-            const customizedItem = { ...item };
-            customizedItem.additionalIngredientsSelected = selectedIngredients;
-            customizedItem.specialRequests = specialRequests;
-
-            // Close customize modal and show main modal
-            modal.remove();
-            showModal(customizedItem, customizedItem.image);
-        });
     
-        document.body.style.paddingRight = '0px';
+            // Update the item object with the customizations
+            item.additionalIngredientsSelected = selectedIngredients;
+            item.specialRequests = specialRequests;
+    
+            // Close customize modal and show main modal
+            $(modal).modal('hide');
+            setTimeout(() => {
+                showModal(item, item.image);
+            }, 150); // Small delay for smooth transition
+        });
     }
 
     async function showCartModal() {
@@ -805,7 +864,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         document.body.insertAdjacentHTML('beforeend', confirmationModal);
-        $('#removeConfirmationModal').modal('show');
+        $('#removeConfirmationModal').modal({
+            backdrop: true,
+            keyboard: false
+        });
     
         // Remove padding-right that Bootstrap adds
         document.body.style.paddingRight = '0px';
@@ -879,7 +941,10 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Initialize the first modal
         const $serviceConfirmationModal = $('#serviceConfirmationModal');
-        $serviceConfirmationModal.modal('show');
+        $serviceConfirmationModal.modal({
+            backdrop: true,
+            keyboard: false
+        });
     
         // Remove padding-right that Bootstrap adds
         document.body.style.paddingRight = '0px';
@@ -930,7 +995,10 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Initialize the second modal
         const $finalServiceModal = $('#finalServiceModal');
-        $finalServiceModal.modal('show');
+        $finalServiceModal.modal({
+            backdrop: true,
+            keyboard: false
+        });
     
         // Remove padding-right that Bootstrap adds
         document.body.style.paddingRight = '0px';
@@ -979,7 +1047,10 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Initialize the first modal
         const $payConfirmationModal = $('#payConfirmationModal');
-        $payConfirmationModal.modal('show');
+        $payConfirmationModal.modal({
+            backdrop: true,
+            keyboard: false
+        });
     
         // Remove padding-right that Bootstrap adds
         document.body.style.paddingRight = '0px';
@@ -1030,7 +1101,10 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Initialize the second modal
         const $finalPayModal = $('#finalPayModal');
-        $finalPayModal.modal('show');
+        $finalPayModal.modal({
+            backdrop: true,
+            keyboard: false
+        });
     
         // Remove padding-right that Bootstrap adds
         document.body.style.paddingRight = '0px';
