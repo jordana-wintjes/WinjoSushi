@@ -260,34 +260,40 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </div>
                             </div>
 
-                            <!-- Ingredients row -->
-                            <div class="ingredients-section">
-                                <h6>Ingredients</h6>
-                                <div class="ingredients-list">
-                                    ${item.ingredients ? item.ingredients.map(ingredient => `
-                                        <div class="ingredient-item">
-                                            <span class="ingredient-bullet">•</span>
-                                            <span class="ingredient-name">${ingredient}</span>
+                            <!-- Ingredients and controls row -->
+                            <div class="ingredients-controls-section d-flex">
+                                <!-- Ingredients row -->
+                                <div class="ingredients-section">
+                                    <h6>Ingredients</h6>
+                                    <div class="ingredients-list">
+                                        ${item.ingredients ? item.ingredients.map(ingredient => `
+                                            <div class="ingredient-item">
+                                                <span class="ingredient-bullet">•</span>
+                                                <span class="ingredient-name">${ingredient}</span>
+                                            </div>
+                                        `).join('') : ''}
+                                    </div>
+                                </div>
+
+                                <!-- Quantity control and buttons row -->
+                                <div class="controls-section ml-auto mt-auto">
+                                    <!-- Quantity control row -->
+                                    <div class="quantity-section">
+                                        <span>Quantity</span>
+                                        <div class="quantity-control">
+                                            <button type="button" class="quantity-button" id="decreaseQuantity">-</button>
+                                            <input type="text" value="1" class="quantity-input" id="itemQuantity" readonly>
+                                            <button type="button" class="quantity-button" id="increaseQuantity">+</button>
                                         </div>
-                                    `).join('') : ''}
-                                </div>
-                            </div>
+                                    </div>
 
-                            <!-- Quantity control row -->
-                            <div class="quantity-section">
-                                <span>Quantity</span>
-                                <div class="quantity-control">
-                                    <button type="button" class="quantity-button" id="decreaseQuantity">-</button>
-                                    <input type="text" value="1" class="quantity-input" id="itemQuantity" readonly>
-                                    <button type="button" class="quantity-button" id="increaseQuantity">+</button>
+                                    <!-- Buttons row -->
+                                    <div class="button-group mt-3">
+                                        <button type="button" class="button button-cancel" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="button button-modify" id="customizeItem">Modify</button>
+                                        <button type="button" class="button button-add" id="addItem">Add</button>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <!-- Buttons row -->
-                            <div class="button-group">
-                                <button type="button" class="button button-cancel" data-dismiss="modal">Cancel</button>
-                                <button type="button" class="button button-modify" id="customizeItem">Modify</button>
-                                <button type="button" class="button button-add" id="addItem">Add</button>
                             </div>
                         </div>
                     </div>
