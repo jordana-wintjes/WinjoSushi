@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentUser = null;
     let storedIngredientQuantities = [];
     let isModifying = false;
+    let lastQuantity = 1;
 
     // Cookie management functions
     function setCookie(name, value) {
@@ -177,14 +178,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cart management functions
     async function addItemToCart(item, quantity, uncheckedIngredients, specialRequests) {
         try {
-            // Create the request body with all necessary fields
             const requestBody = {
                 userId: currentUser._id,
                 itemId: item._id,
                 quantity: parseInt(quantity),
                 specialRequests: specialRequests || '',
-                // Include additionalIngredientsSelected if present
-                additionalIngredientsSelected: item.additionalIngredientsSelected || []
+                additionalIngredientsSelected: item.additionalIngredientsSelected || [],
+                uncheckedIngredients: item.uncheckedIngredients || [] // Make sure this is properly passed
             };
     
             console.log('Request body:', requestBody);
@@ -212,8 +212,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function resetCustomizations(item) {
-        item.uncheckedIngredients = '';
+        item.uncheckedIngredients = [];
         item.specialRequests = '';
+        item.additionalIngredientsSelected = [];
+        // Reset any stored quantities
+        storedIngredientQuantities = [];
     }
 
     // Scroll position management
@@ -240,6 +243,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Modal functions
     function showModal(item, imgSrc) {
+
+        let currentQuantity = isModifying ? lastQuantity : 1;
+
         var modalContent = `
             <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -287,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <span>Quantity</span>
                                         <div class="quantity-control">
                                             <button type="button" class="quantity-button" id="decreaseQuantity">-</button>
-                                            <input type="text" value="1" class="quantity-input" id="itemQuantity" readonly>
+                                            <input type="text" value="${currentQuantity}" class="quantity-input" id="itemQuantity" readonly>
                                             <button type="button" class="quantity-button" id="increaseQuantity">+</button>
                                         </div>
                                     </div>
@@ -412,7 +418,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Single event listener for customizeItem button
         document.getElementById('customizeItem').addEventListener('click', function () {
-            isModifying = true;  // Set the flag before hiding modal
+            const quantityInput = document.getElementById('itemQuantity');
+            lastQuantity = parseInt(quantityInput.value); // Store the quantity before closing
+            isModifying = true;
             $('#itemModal').modal('hide');
             showCustomizeModal(item);
         });
@@ -451,6 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="item-image-container">
                                 <img src="${item.image}" alt="${item.name}" class="item-image">
                             </div>
+                            
                             <div class="other-requests">
                                 <h2 class="requests-title">Special Requests</h2>
                                 <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
@@ -463,8 +472,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
     
                             <div class="customize-ingredients">
+                                <h2 class="requests-title">Extras</h2>
                                 ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
-                                    // Find if this ingredient was previously selected
                                     const previousSelection = item.additionalIngredientsSelected ? 
                                         item.additionalIngredientsSelected.find(selected => selected.name === addon.ingredient) : null;
                                     const previousQuantity = previousSelection ? previousSelection.quantity : 0;
@@ -485,6 +494,20 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }).join('') : ''}
                             </div>
     
+                            <div class="customize-ingredients">
+                                <h2 class="requests-title">Removable Ingredients</h2>
+                                ${item.removableIngredients ? item.removableIngredients.map(ingredient => `
+                                    <div class="ingredient-row" data-ingredient="${ingredient}">
+                                        <label class="ingredient-checkbox">
+                                            <input type="checkbox"
+                                                class="ingredient-toggle"
+                                                data-ingredient="${ingredient}">
+                                            <span class="ingredient-name">${ingredient}</span>
+                                        </label>
+                                    </div>
+                                `).join('') : ''}
+                            </div>
+                                
                             <div class="modal-actions">
                                 <button class="done-btn">Done</button>
                             </div>
@@ -497,36 +520,63 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.insertAdjacentHTML('beforeend', customizeModalContent);
         const modal = document.getElementById('customizeModal');
     
-        // Handle quantity controls
-        const ingredientRows = modal.querySelectorAll('.ingredient-row');
+        // Handle quantity controls for additional ingredients
+        const ingredientRows = modal.querySelectorAll('.ingredient-row[data-price]');
         ingredientRows.forEach(row => {
             const decreaseBtn = row.querySelector('.decrease-btn');
             const increaseBtn = row.querySelector('.increase-btn');
             const quantityValue = row.querySelector('.quantity-value');
             const totalPriceElement = row.querySelector('.total-price');
-            const priceStr = row.dataset.price;
-            const basePrice = parseFloat(priceStr.replace('$', ''));
+            
+            if (row.dataset.price) {
+                const basePrice = parseFloat(row.dataset.price);
+                const updateTotalPrice = (quantity) => {
+                    const total = (basePrice * quantity).toFixed(2);
+                    totalPriceElement.textContent = `$${total}`;
+                };
     
-            // Function to update total price
-            const updateTotalPrice = (quantity) => {
-                const total = (basePrice * quantity).toFixed(2);
-                totalPriceElement.textContent = `$${total}`;
-            };
+                decreaseBtn.addEventListener('click', () => {
+                    let value = parseInt(quantityValue.textContent);
+                    if (value > 0) {
+                        value--;
+                        quantityValue.textContent = value;
+                        updateTotalPrice(value);
+                    }
+                });
     
-            decreaseBtn.addEventListener('click', () => {
-                let value = parseInt(quantityValue.textContent);
-                if (value > 0) {
-                    value--;
+                increaseBtn.addEventListener('click', () => {
+                    let value = parseInt(quantityValue.textContent);
+                    value++;
                     quantityValue.textContent = value;
                     updateTotalPrice(value);
-                }
-            });
+                });
+            }
+        });
     
-            increaseBtn.addEventListener('click', () => {
-                let value = parseInt(quantityValue.textContent);
-                value++;
-                quantityValue.textContent = value;
-                updateTotalPrice(value);
+        // Handle removable ingredients checkboxes
+        const ingredientCheckboxes = modal.querySelectorAll('.ingredient-toggle');
+        ingredientCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const ingredient = this.dataset.ingredient;
+                
+                // Initialize uncheckedIngredients array if it doesn't exist
+                if (!item.uncheckedIngredients) {
+                    item.uncheckedIngredients = [];
+                }
+
+                // When checkbox is checked by user, add ingredient to uncheckedIngredients
+                if (this.checked) {
+                    if (!item.uncheckedIngredients.includes(ingredient)) {
+                        item.uncheckedIngredients.push(ingredient);
+                        console.log(`Added ${ingredient} to unchecked ingredients`);
+                    }
+                } else {
+                    // Remove from unchecked ingredients when unchecked
+                    item.uncheckedIngredients = item.uncheckedIngredients.filter(ing => ing !== ingredient);
+                    console.log(`Removed ${ingredient} from unchecked ingredients`);
+                }
+                
+                console.log('Current unchecked ingredients:', item.uncheckedIngredients);
             });
         });
     
@@ -534,14 +584,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const closeBtn = modal.querySelector('.customize-close');
         closeBtn.addEventListener('click', () => {
             modal.remove();
+            isModifying = true;
             showModal(item, item.image);
         });
     
         // Handle done button
         const doneBtn = modal.querySelector('.done-btn');
         doneBtn.addEventListener('click', () => {
-            const currentIngredientRows = modal.querySelectorAll('.ingredient-row');
-            const selectedIngredients = Array.from(currentIngredientRows)
+            // Get selected additional ingredients
+            const additionalIngredientRows = modal.querySelectorAll('.ingredient-row[data-price]');
+            const selectedIngredients = Array.from(additionalIngredientRows)
                 .map(row => {
                     const quantity = parseInt(row.querySelector('.quantity-value').textContent);
                     if (quantity > 0) {
@@ -558,12 +610,14 @@ document.addEventListener('DOMContentLoaded', function () {
             // Get special requests
             const specialRequests = modal.querySelector('textarea').value;
     
-            // Update the item object with the customizations
+            // Update the item object with all customizations
             item.additionalIngredientsSelected = selectedIngredients;
+            // Note: uncheckedIngredients is already being updated through checkbox event listeners
             item.specialRequests = specialRequests;
     
             // Close customize modal and show main modal
             modal.remove();
+            isModifying = true;
             showModal(item, item.image);
         });
     
@@ -682,7 +736,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!orders || orders.length === 0) {
             return '<p class="text-center my-3">No orders found</p>';
         }
-
         console.log(orders)
     
         return `
@@ -697,7 +750,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </tr>
                     </thead>
                     <tbody>
-                        ${orders.flatMap(order => 
+                        ${orders.flatMap(order =>
                             order.items.map(item => `
                                 <tr>
                                     <td>${formatOrderDate(order)}</td>
@@ -718,6 +771,29 @@ document.addEventListener('DOMContentLoaded', function () {
                                                         </div>
                                                     `).join('')}
                                             </div>
+                                        </td>
+                                    </tr>
+                                ` : ''}
+                                ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `
+                                    <tr class="modification-row">
+                                        <td colspan="4">
+                                            <div class="removed-ingredients">
+                                                <p class="mb-1"><strong>Removed Ingredients:</strong></p>
+                                                ${item.uncheckedIngredients
+                                                    .map(ing => `
+                                                        <div class="ingredient-item">
+                                                            ${ing}
+                                                        </div>
+                                                    `).join('')}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ` : ''}
+                                ${item.specialInstructions ? `
+                                    <tr class="modification-row">
+                                        <td colspan="4">
+                                            <p class="mb-1"><strong>Special Instructions:</strong></p>
+                                            <p class="special-instructions">${item.specialInstructions}</p>
                                         </td>
                                     </tr>
                                 ` : ''}
@@ -745,70 +821,78 @@ document.addEventListener('DOMContentLoaded', function () {
             return '<p>Your cart is empty</p>';
         }
     
-        let content = 
-        `<table class="receipt-table">
-            <thead>
-                <tr>
-                    <th class="item-col">Item</th>
-                    <th class="price-col">Price</th>
-                    <th class="quantity-col">Quantity</th>
-                    <th class="remove-col"></th>
-                </tr>
-            </thead>
-            <tbody class="cartItems">
-                ${cart.items.map(item => `
-                    <tr>
-                        <td>${item.name}</td>
-                        <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
-                        <td>
-                            <div class="quantity-control">
-                                <span class="quantity-value">${item.quantity}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="remove-item-btn">
-                                <button type="button" class="btn btn-link text-danger" onclick="showRemoveConfirmation('${cart._id}', '${item._id}', '${item.name}')">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
-                        <tr class="modification-row">
-                            <td colspan="4">
-                                <div class="additional-ingredients">
-                                    <p class="mb-1"><strong>Additional Ingredients:</strong></p>
-                                    ${item.additionalIngredients
-                                        .filter(ing => ing.quantity > 0)
-                                        .map(ing => `
-                                            <div class="ingredient-item">
-                                                ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
-                                            </div>
-                                        `).join('')}
+        let content = `
+            <table class="receipt-table">
+                <!-- ... existing table headers ... -->
+                <tbody class="cartItems">
+                    ${cart.items.map(item => `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
+                            <td>
+                                <div class="quantity-control">
+                                    <span class="quantity-value">${item.quantity}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="remove-item-btn">
+                                    <button type="button" class="btn btn-link text-danger" onclick="showRemoveConfirmation('${cart._id}', '${item._id}', '${item.name}')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
-                    ` : ''}
-    
-                    ${item.specialInstructions ? `
-                        <tr class="modification-row">
-                            <td colspan="4">
-                                <p class="mb-1"><strong>Special Instructions:</strong></p>
-                                <p class="special-instructions">${item.specialInstructions}</p>
-                            </td>
-                        </tr>
-                    ` : ''}
-    
-                `).join('')}
-            </tbody>
-        </table>
-        <hr>
-        <div class="cartCost">
-            <h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5>
-            <h5>Tax: $${cart.tax.toFixed(2)}</h5>
-            <h5>Total: $${cart.total.toFixed(2)}</h5>
-        </div>`;
+                        
+                        ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
+                            <tr class="modification-row">
+                                <td colspan="4">
+                                    <div class="additional-ingredients">
+                                        <p class="mb-1"><strong>Additional Ingredients:</strong></p>
+                                        ${item.additionalIngredients
+                                            .filter(ing => ing.quantity > 0)
+                                            .map(ing => `
+                                                <div class="ingredient-item">
+                                                    ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
+                                                </div>
+                                            `).join('')}
+                                    </div>
+                                </td>
+                            </tr>
+                        ` : ''}
+                        
+                        ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `
+                            <tr class="modification-row">
+                                <td colspan="4">
+                                    <div class="removed-ingredients">
+                                        <p class="mb-1"><strong>Removed Ingredients:</strong></p>
+                                        ${item.uncheckedIngredients
+                                            .map(ing => `
+                                                <div class="ingredient-item">
+                                                    ${ing}
+                                                </div>
+                                            `).join('')}
+                                    </div>
+                                </td>
+                            </tr>
+                        ` : ''}
+                        
+                        ${item.specialInstructions ? `
+                            <tr class="modification-row">
+                                <td colspan="4">
+                                    <p class="mb-1"><strong>Special Instructions:</strong></p>
+                                    <p class="special-instructions">${item.specialInstructions}</p>
+                                </td>
+                            </tr>
+                        ` : ''}
+                    `).join('')}
+                </tbody>
+            </table>
+            <hr>
+            <div class="cartCost">
+                <h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5>
+                <h5>Tax: $${cart.tax.toFixed(2)}</h5>
+                <h5>Total: $${cart.total.toFixed(2)}</h5>
+            </div>`;
     
         return content;
     }
@@ -1244,6 +1328,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     image: item.imageUrl,
                     _id: item.id,
                     ingredients: item.ingredients,
+                    removableIngredients: item.removableIngredients,
                     additionalIngredients: item.additionalIngredients.map(addon => ({
                         ingredient: addon.ingredient,
                         price: addon.price
