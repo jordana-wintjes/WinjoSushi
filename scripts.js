@@ -440,54 +440,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showCustomizeModal(item) {
         const customizeModalContent = `
-            <div class="modal fade" id="customizeModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                    <div class="modal-content">
-                        <button type="button" class="close customize-close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        
-                        <div class="customize-content-grid">
-                            <div class="left-column">
-                                <div class="item-image-container">
-                                    <img src="${item.image}" alt="${item.name}" class="item-image">
-                                </div>
-                                <div class="other-requests">
-                                    <h2 class="requests-title">Special Requests</h2>
-                                    <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
-                                </div>
+            <div class="customize-modal" id="customizeModal" tabindex="-1" role="dialog">
+                <div class="customize-modal-content">
+                    <button type="button" class="customize-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    
+                    <div class="customize-content-grid">
+                        <div class="left-column">
+                            <div class="item-image-container">
+                                <img src="${item.image}" alt="${item.name}" class="item-image">
+                            </div>
+                            <div class="other-requests">
+                                <h2 class="requests-title">Special Requests</h2>
+                                <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
+                            </div>
+                        </div>
+    
+                        <div class="right-column">
+                            <div class="customize-header">
+                                <h2 class="customize-title">${item.name}</h2>
                             </div>
     
-                            <div class="right-column">
-                                <div class="customize-header">
-                                    <h2 class="customize-title">${item.name}</h2>
-                                </div>
-    
-                                <div class="customize-ingredients">
-                                    ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
-                                        const previousSelection = item.additionalIngredientsSelected ? 
-                                            item.additionalIngredientsSelected.find(selected => selected.name === addon.ingredient) : null;
-                                        const previousQuantity = previousSelection ? previousSelection.quantity : 0;
-                                        
-                                        return `
-                                            <div class="ingredient-row" data-ingredient="${addon.ingredient}" data-price="${addon.price}">
-                                                <span class="ingredient-name">${addon.ingredient}</span>
-                                                <div class="ingredient-price-quantity">
-                                                    <span class="total-price">$${(addon.price * previousQuantity).toFixed(2)}</span>
-                                                    <div class="quantity-control">
-                                                        <button class="quantity-btn decrease-btn">-</button>
-                                                        <span class="quantity-value">${previousQuantity}</span>
-                                                        <button class="quantity-btn increase-btn">+</button>
-                                                    </div>
+                            <div class="customize-ingredients">
+                                ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
+                                    // Find if this ingredient was previously selected
+                                    const previousSelection = item.additionalIngredientsSelected ? 
+                                        item.additionalIngredientsSelected.find(selected => selected.name === addon.ingredient) : null;
+                                    const previousQuantity = previousSelection ? previousSelection.quantity : 0;
+                                    
+                                    return `
+                                        <div class="ingredient-row" data-ingredient="${addon.ingredient}" data-price="${addon.price}">
+                                            <span class="ingredient-name">${addon.ingredient}</span>
+                                            <div class="ingredient-price-quantity">
+                                                <span class="total-price">$${(addon.price * previousQuantity).toFixed(2)}</span>
+                                                <div class="quantity-control">
+                                                    <button class="quantity-btn decrease-btn">-</button>
+                                                    <span class="quantity-value">${previousQuantity}</span>
+                                                    <button class="quantity-btn increase-btn">+</button>
                                                 </div>
                                             </div>
-                                        `;
-                                    }).join('') : ''}
-                                </div>
+                                        </div>
+                                    `;
+                                }).join('') : ''}
+                            </div>
     
-                                <div class="modal-actions">
-                                    <button class="done-btn">Done</button>
-                                </div>
+                            <div class="modal-actions">
+                                <button class="done-btn">Done</button>
                             </div>
                         </div>
                     </div>
@@ -495,30 +494,8 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
     
-        // Remove any existing customize modal
-        const existingModal = document.getElementById('customizeModal');
-        if (existingModal) {
-            existingModal.remove();
-        }
-    
         document.body.insertAdjacentHTML('beforeend', customizeModalContent);
         const modal = document.getElementById('customizeModal');
-    
-        // Initialize modal with Bootstrap
-        $(modal).modal({
-            backdrop: true,
-            keyboard: false
-        });
-    
-        // Remove padding-right that Bootstrap adds
-        document.body.style.paddingRight = '0px';
-    
-        // Add proper cleanup on modal hide
-        $(modal).on('hidden.bs.modal', function () {
-            $(this).remove();
-            $('.modal-backdrop').remove();
-            $('body').removeClass('modal-open').css('padding-right', '');
-        });
     
         // Handle quantity controls
         const ingredientRows = modal.querySelectorAll('.ingredient-row');
@@ -556,10 +533,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Handle close button
         const closeBtn = modal.querySelector('.customize-close');
         closeBtn.addEventListener('click', () => {
-            $(modal).modal('hide');
-            setTimeout(() => {
-                showModal(item, item.image);
-            }, 150); // Small delay for smooth transition
+            modal.remove();
+            showModal(item, item.image);
         });
     
         // Handle done button
@@ -588,11 +563,11 @@ document.addEventListener('DOMContentLoaded', function () {
             item.specialRequests = specialRequests;
     
             // Close customize modal and show main modal
-            $(modal).modal('hide');
-            setTimeout(() => {
-                showModal(item, item.image);
-            }, 150); // Small delay for smooth transition
+            modal.remove();
+            showModal(item, item.image);
         });
+    
+        document.body.style.paddingRight = '0px';
     }
 
     async function showCartModal() {
@@ -707,6 +682,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!orders || orders.length === 0) {
             return '<p class="text-center my-3">No orders found</p>';
         }
+
+        console.log(orders)
     
         return `
             <div class="receipt">
@@ -849,7 +826,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="modal-footer border-0">
                             <button type="button" class="btn btn-secondary" id="noRemoveBtn">No</button>
-                            <button type="button" class="btn btn-danger" onclick="removeCartItem('${cartId}', '${itemId}')">Yes</button>
+                            <button type="button" class="btn btn-danger" id="yesRemoveBtn" onclick="removeCartItem('${cartId}', '${itemId}')">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -879,6 +856,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 showCartModal(); // Show the cart modal again
             }, 100)
         });
+
+        document.getElementById('yesRemoveBtn').addEventListener('click', function() {
+            $('#removeConfirmationModal').modal('hide');
+            setTimeout(() => {
+                showCartModal(); // Show the cart modal again
+            }, 100)
+        });
+    
     
         $('#removeConfirmationModal').on('hidden.bs.modal', function () {
             $(this).remove();
@@ -1230,6 +1215,13 @@ document.addEventListener('DOMContentLoaded', function () {
             $(this).remove();
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open').css('padding-right', '');
+            // Show the cart modal after a brief delay to ensure proper cleanup
+            setTimeout(() => {
+                showCartModal().then(() => {
+                    // Switch to the in-progress tab after modal is shown
+                    $('#cartModal #in-progress-tab').tab('show');
+                });
+            }, 100);
         });
     }
 
