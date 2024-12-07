@@ -186,8 +186,8 @@ html, body {
 
 .close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: -5px;
+    right: 5px;
     font-size: 50px;
     z-index: 1;
     background: none;
@@ -378,9 +378,9 @@ hr{
     margin: 20px;
 }
 
-.customize-close {
+/* .customize-close {
     position: absolute;
-    top: 10px;
+    top: -20px;
     right: 10px;
     font-size: 50px;
     z-index: 1;
@@ -390,7 +390,7 @@ hr{
     padding: 0;
     width: 30px;
     height: 30px;
-}
+} */
 
 .customize-content-grid {
     display: grid;

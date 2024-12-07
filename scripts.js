@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const customizeModalContent = `
             <div class="customize-modal" id="customizeModal" tabindex="-1" role="dialog">
                 <div class="customize-modal-content">
-                    <button type="button" class="customize-close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close customize-close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     
