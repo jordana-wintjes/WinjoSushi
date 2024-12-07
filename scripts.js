@@ -285,78 +285,78 @@ document.addEventListener('DOMContentLoaded', function () {
         let currentQuantity = isModifying ? lastQuantity : 1;
 
         var modalContent = `
-            <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-
-                        <div class="modal-content-grid">
-                            <!-- Top row with two columns -->
-                            <div class="top-section">
-                                <div class="image-column">
-                                    <img src="${imgSrc}" alt="${item.name}" class="item-image">
+        <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+    
+                    <div class="modal-content-grid">
+                        <!-- Top row with two columns -->
+                        <div class="top-section">
+                            <div class="image-column">
+                                <img src="${imgSrc}" alt="${item.name}" class="item-image">
+                            </div>
+                            
+                            <div class="info-column">
+                                <div class="header-row d-flex align-items-center">
+                                    <h5 class="modal-title">${item.name}</h5>
+                                    <h5 class="item-price" style="position: relative; left: -20px;">$${item.price}</h5>
                                 </div>
-                                
-                                <div class="info-column">
-                                    <div class="header-row d-flex align-items-center">
-                                        <h5 class="modal-title">${item.name}</h5>
-                                        <h5 class="item-price" style="position: relative; left: -20px;">$${item.price}</h5>
+                                <p class="item-description">${item.description}</p>
+                                ${item.specialRequests || (item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0) || (item.uncheckedIngredients && item.uncheckedIngredients.length > 0) ? `
+                                <div class="modified-ingredients-section">
+                                    ${item.specialRequests ? `<h6>Special Requests:</h6><p>${item.specialRequests}</p>` : ''}
+                                    <div class="modified-ingredients-list">
+                                    ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ? `<h6>Added Ingredients:</h6>` + item.additionalIngredientsSelected.map(ingredient => `<p>${"+ " + ingredient.quantity + " " + ingredient.name + " " + "+" +ingredient.totalPrice}</p>`).join('') : ''}
+                                    ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `<h6>Removed Ingredients:</h6>` + item.uncheckedIngredients.map(ingredient => `<p>${"No " + ingredient}</p>`).join('') : ''}
                                     </div>
-                                    <p class="item-description">${item.description}</p>
-                                    <div class="modified-ingredients-section">
-                                        ${item.specialRequests ? `<h6>Special Requests:</h6><p>${item.specialRequests}</p>` : ''}
-                                        <div class="modified-ingredients-list">
-                                        ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ? `<h6>Added Ingredients:</h6>` + item.additionalIngredientsSelected.map(ingredient => `<p>${"+ " + ingredient.quantity + " " + ingredient.name + " " + "+" +ingredient.totalPrice}</p>`).join('') : ''}
-                                        ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `<h6>Removed Ingredients:</h6>` + item.uncheckedIngredients.map(ingredient => `<p>${"No " + ingredient}</p>`).join('') : ''}
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+    
+                        <!-- Ingredients and controls row -->
+                        <div class="ingredients-controls-section d-flex">
+                            <!-- Ingredients row -->
+                            <div class="ingredients-section">
+                                <h6>Ingredients</h6>
+                                <div class="ingredients-list">
+                                    ${item.ingredients ? item.ingredients.map(ingredient => `
+                                        <div class="ingredient-item">
+                                            <span class="ingredient-bullet">•</span>
+                                            <span class="ingredient-name">${ingredient}</span>
                                         </div>
-                                        
-                                    </div>
-                                    
+                                    `).join('') : ''}
                                 </div>
                             </div>
-
-                            <!-- Ingredients and controls row -->
-                            <div class="ingredients-controls-section d-flex">
-                                <!-- Ingredients row -->
-                                <div class="ingredients-section">
-                                    <h6>Ingredients</h6>
-                                    <div class="ingredients-list">
-                                        ${item.ingredients ? item.ingredients.map(ingredient => `
-                                            <div class="ingredient-item">
-                                                <span class="ingredient-bullet">•</span>
-                                                <span class="ingredient-name">${ingredient}</span>
-                                            </div>
-                                        `).join('') : ''}
+    
+                            <!-- Quantity control and buttons row -->
+                            <div class="controls-section ml-auto mt-auto">
+                                <!-- Quantity control row -->
+                                <div class="quantity-section">
+                                    <span>Quantity</span>
+                                    <div class="quantity-control">
+                                        <button type="button" class="quantity-button" id="decreaseQuantity">-</button>
+                                        <input type="text" value="${currentQuantity}" class="quantity-input" id="itemQuantity" readonly>
+                                        <button type="button" class="quantity-button" id="increaseQuantity">+</button>
                                     </div>
                                 </div>
-
-                                <!-- Quantity control and buttons row -->
-                                <div class="controls-section ml-auto mt-auto">
-                                    <!-- Quantity control row -->
-                                    <div class="quantity-section">
-                                        <span>Quantity</span>
-                                        <div class="quantity-control">
-                                            <button type="button" class="quantity-button" id="decreaseQuantity">-</button>
-                                            <input type="text" value="${currentQuantity}" class="quantity-input" id="itemQuantity" readonly>
-                                            <button type="button" class="quantity-button" id="increaseQuantity">+</button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Buttons row -->
-                                    <div class="button-group mt-3">
-                                        <button type="button" class="button button-cancel" data-dismiss="modal">Cancel</button>
-                                        <button type="button" class="button button-modify" id="customizeItem">Modify</button>
-                                        <button type="button" class="button button-add" id="addItem">Add</button>
-                                    </div>
+    
+                                <!-- Buttons row -->
+                                <div class="button-group mt-3">
+                                    <button type="button" class="button button-cancel" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="button button-modify" id="customizeItem">Modify</button>
+                                    <button type="button" class="button button-add" id="addItem">Add</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
         document.body.insertAdjacentHTML('beforeend', modalContent);
         $('#itemModal').modal({
