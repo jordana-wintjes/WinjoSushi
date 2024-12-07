@@ -1516,7 +1516,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(([itemsResponse, categoriesResponse]) => 
                 Promise.all([itemsResponse.json(), categoriesResponse.json()])
             )
-            .then(([items, categories]) => {
+            .then(async([items, categories]) => {
                 const menuItems = items.map(item => ({
                     category: item.category,
                     name: item.name,
@@ -1538,6 +1538,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Menu Items with Additional Ingredients:');
                 console.log(menuItems);
                 populateMenu(menuItems);
+
+                const currentCart = await getCurrentCart();
+                if (currentCart && currentCart.items && currentCart.items.length > 0) {
+                    addNotificationBubble(currentCart.items.length);
+                }
             })
             .catch(error => {
                 console.error('Error loading menu:', error);
@@ -1550,6 +1555,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.btn[data-target="#cartModal"]')?.addEventListener('click', showCartModal);
         document.querySelector('.btn[data-target="#serviceModal"]')?.addEventListener('click', showServiceModal);
         document.querySelector('.btn[data-target="#payModal"]')?.addEventListener('click', showPayModal);
+
+        
     }
 
     
