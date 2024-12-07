@@ -541,6 +541,7 @@ hr{
     align-items: center;
     margin-bottom: 15px;
     padding: 5px 0;
+    font-size: 1.3rem;
 }
 
 .ingredient-item {
@@ -582,7 +583,7 @@ hr{
 .quantity-value {
     width: 20px;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.3rem;
 }
 
 .modal-actions {
@@ -728,7 +729,7 @@ hr{
 .level-value {
     width: 60px; /* Fixed width to prevent jumping */
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.3rem;
 }
 .notification-bubble {
     border-color: #E5383B!important;

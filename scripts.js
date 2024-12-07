@@ -525,30 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
         
                             <div class="customize-ingredients">
-                                <h2 class="requests-title">Extras</h2>
-                                ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
-                                    const previousSelection = item.additionalIngredientsSelected ? 
-                                        item.additionalIngredientsSelected.find(selected => selected.name === addon.ingredient) : null;
-                                    const previousQuantity = previousSelection ? previousSelection.quantity : 0;
-                                    
-                                    return `
-                                        <div class="ingredient-row" data-ingredient="${addon.ingredient}" data-price="${addon.price}">
-                                            <span class="ingredient-name">${addon.ingredient}</span>
-                                            <div class="ingredient-price-quantity">
-                                                <span class="total-price">$${(addon.price * previousQuantity).toFixed(2)}</span>
-                                                <div class="quantity-control">
-                                                    <button class="quantity-btn decrease-btn">-</button>
-                                                    <span class="quantity-value">${previousQuantity}</span>
-                                                    <button class="quantity-btn increase-btn">+</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('') : ''}
-                            </div>
-        
-                            <div class="customize-ingredients">
-                                <h2 class="requests-title">Ingredient Preferences</h2>
+                                <h2 class="requests-title">Change what's included</h2>
                                 ${Array.isArray(item.removableIngredients) ?
                                     item.removableIngredients.map(ingredient => {
                                         const currentLevel = item.removableIngredientLevels?.[ingredient] || 'regular';
@@ -574,6 +551,29 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </div>
                                     `).join('')
                                 }
+                            </div>
+                            
+                            <div class="customize-ingredients">
+                                <h2 class="requests-title">Additions</h2>
+                                ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
+                                    const previousSelection = item.additionalIngredientsSelected ? 
+                                        item.additionalIngredientsSelected.find(selected => selected.name === addon.ingredient) : null;
+                                    const previousQuantity = previousSelection ? previousSelection.quantity : 0;
+                                    
+                                    return `
+                                        <div class="ingredient-row" data-ingredient="${addon.ingredient}" data-price="${addon.price}">
+                                            <span class="ingredient-name">${addon.ingredient} ($${addon.price}0)</span>
+                                            <div class="ingredient-price-quantity">
+                                                <span class="total-price">$${(addon.price * previousQuantity).toFixed(2)}</span>
+                                                <div class="quantity-control">
+                                                    <button class="quantity-btn decrease-btn">-</button>
+                                                    <span class="quantity-value">${previousQuantity}</span>
+                                                    <button class="quantity-btn increase-btn">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('') : ''}
                             </div>
                                 
                             <div class="modal-actions">
