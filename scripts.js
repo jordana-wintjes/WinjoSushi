@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
             existingBubble.remove();
         }
     }
-    
+
     // Cookie management functions
     function setCookie(name, value) {
         // Set cookie to expire in exactly 24 hours
@@ -779,7 +779,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </div>
                                     <div class="tab-pane fade" id="in-progress" role="tabpanel">
                                         <div class="orders">
-                                            ${generateOrdersList(inProgressOrders)}
+                                            ${generateOrdersList(inProgressOrders, false)}
                                         </div>
                                         <div class="modal-footer border-0">
                                             <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
@@ -787,7 +787,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </div>
                                     <div class="tab-pane fade" id="order-history" role="tabpanel">
                                         <div class="orders">
-                                        ${generateOrdersList(pastOrders)}
+                                        ${generateOrdersList(pastOrders, true)}
                                         </div>
                                         <div class="modal-footer border-0">
                                             <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
@@ -840,11 +840,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
-    function generateOrdersList(orders) {
+    function generateOrdersList(orders, isPastOrders = false) {
         if (!orders || orders.length === 0) {
             return '<p class="text-center my-3">No orders found</p>';
         }
         console.log(orders)
+    
+        // Calculate subtotal and number of items
+        const { subtotal, itemCount } = orders.reduce((acc, order) => {
+            const orderSubtotal = order.items.reduce((itemAcc, item) => {
+                acc.itemCount += item.quantity;
+                return itemAcc + (item.basePrice + item.addonsTotal) * item.quantity;
+            }, 0);
+            acc.subtotal += orderSubtotal;
+            return acc;
+        }, { subtotal: 0, itemCount: 0 });
+    
+        const formattedSubtotal = subtotal.toFixed(2);
+        const tax = (subtotal * 0.1).toFixed(2); // Example tax calculation (10% of subtotal)
+        const total = (parseFloat(formattedSubtotal) + parseFloat(tax)).toFixed(2);
     
         return `
             <div class="receipt">
@@ -908,6 +922,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         ).join('')}
                     </tbody>
                 </table>
+                <hr>
+                ${isPastOrders ? `
+                <div class="cartCost">
+                    <h5>Number of Items: ${itemCount}</h5>
+                    <h5>Subtotal: $${formattedSubtotal}</h5>
+                    <h5>Tax: $${tax}</h5>
+                    <h5>Total: $${total}</h5>
+                </div>
+                ` : ''}
             </div>
         `;
     }
