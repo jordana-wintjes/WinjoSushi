@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:7853/api';
+const API_BASE_URL = 'https://winjosushi-backend.onrender.com/api';
 
 // Fetch menu items from the backend instead of menuItems.json
 async function fetchMenuItems() {
