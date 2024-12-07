@@ -558,20 +558,17 @@ document.addEventListener('DOMContentLoaded', function () {
         
                             <div class="customize-ingredients">
                                 <h2 class="requests-title">Change what's included</h2>
-                                ${Array.isArray(item.removableIngredients) ?
-                                    item.removableIngredients.map(ingredient => {
-                                        const currentLevel = item.removableIngredientLevels?.[ingredient] || 'regular';
-                                        return `
-                                            <div class="ingredient-row" data-ingredient="${ingredient}">
-                                                <span class="ingredient-name">${ingredient}</span>
-                                                <div class="ingredient-level-control">
-                                                    <button class="level-btn decrease-level" data-ingredient="${ingredient}">-</button>
-                                                    <span class="level-value" data-ingredient="${ingredient}" data-level="${currentLevel}">${currentLevel}</span>
-                                                    <button class="level-btn increase-level" data-ingredient="${ingredient}">+</button>
-                                                </div>
+                                ${Array.isArray(item.removableIngredients) ? 
+                                    item.removableIngredients.map(ingredient => `
+                                        <div class="ingredient-row" data-ingredient="${ingredient}">
+                                            <span class="ingredient-name">${ingredient}</span>
+                                            <div class="ingredient-level-control">
+                                                <button class="level-btn decrease-level" data-ingredient="${ingredient}">-</button>
+                                                <span class="level-value" data-ingredient="${ingredient}" data-level="regular">regular</span>
+                                                <button class="level-btn increase-level" data-ingredient="${ingredient}">+</button>
                                             </div>
-                                        `;
-                                    }).join('') :
+                                        </div>
+                                    `).join('') :
                                     Object.entries(item.removableIngredients || {}).map(([ingredient, level]) => `
                                         <div class="ingredient-row" data-ingredient="${ingredient}">
                                             <span class="ingredient-name">${ingredient}</span>
@@ -662,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             if (decreaseBtn && increaseBtn && levelValue) {
                 const ingredient = control.closest('.ingredient-row').dataset.ingredient;
-
+        
                 const levels = ['none', 'light', 'regular'];
                 
                 decreaseBtn.addEventListener('click', () => {
@@ -670,28 +667,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (currentIndex > 0) {
                         const newLevel = levels[currentIndex - 1];
                         levelValue.textContent = newLevel;
-                        if (!item.removableIngredients) {
-                            item.removableIngredients = {};
-                        }
-                        item.removableIngredients[ingredient] = newLevel;
                         levelValue.setAttribute('data-level', newLevel);
                     }
                 });
-
+                
                 increaseBtn.addEventListener('click', () => {
                     const currentIndex = levels.indexOf(levelValue.textContent);
                     if (currentIndex < levels.length - 1) {
                         const newLevel = levels[currentIndex + 1];
                         levelValue.textContent = newLevel;
-                        if (!item.removableIngredients) {
-                            item.removableIngredients = {};
-                        }
-                        item.removableIngredients[ingredient] = newLevel;
                         levelValue.setAttribute('data-level', newLevel);
                     }
                 });
             }
         });
+        
         
         // Handle close button
         const closeBtn = modal.querySelector('.customize-close');
@@ -725,30 +715,36 @@ document.addEventListener('DOMContentLoaded', function () {
                             return null;
                         })
                         .filter(ing => ing !== null);
-
-                    // Get ingredient levels for removable ingredients
-                    // Only store levels that are 'none' or 'light'
-                    const ingredientLevels = {};
+            
+                    // Get all ingredients and their levels
+                    const allIngredientLevels = {};
+                    const originalIngredients = Array.isArray(item.removableIngredients) ? 
+                        item.removableIngredients : 
+                        Object.keys(item.removableIngredients || {});
+            
+                    // Initialize all ingredients with 'regular' level
+                    originalIngredients.forEach(ingredient => {
+                        allIngredientLevels[ingredient] = 'regular';
+                    });
+            
+                    // Update with any modified levels
                     modal.querySelectorAll('.ingredient-row[data-ingredient]').forEach(row => {
                         const levelElement = row.querySelector('.level-value');
                         if (row.dataset.ingredient && levelElement) {
                             const level = levelElement.textContent;
-                            // Only add to ingredientLevels if the level is 'none' or 'light'
-                            if (level === 'none' || level === 'light') {
-                                ingredientLevels[row.dataset.ingredient] = level;
-                            }
+                            allIngredientLevels[row.dataset.ingredient] = level;
                         }
                     });
-
+            
                     // Get special requests
                     const textArea = modal.querySelector('textarea');
                     const specialRequests = textArea ? textArea.value : '';
-
+            
                     // Update the item object with all customizations
                     item.additionalIngredientsSelected = selectedIngredients;
-                    item.removableIngredients = ingredientLevels; // Now only contains non-regular values
+                    item.removableIngredients = allIngredientLevels;
                     item.specialRequests = specialRequests;
-
+            
                     // Close the customize modal and return to main modal
                     modal.remove();
                     isModifying = true;
