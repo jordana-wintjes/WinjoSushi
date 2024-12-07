@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                                    <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                                 </div>
                             </div>
                         </div>
@@ -538,7 +538,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                                 
                             <div class="modal-actions">
-                                <button class="done-btn">Done</button>
+                                <button class="button done-btn">Done</button>
                             </div>
                         </div>
                     </div>
@@ -732,9 +732,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <div id="cart-total" class="mt-3">
                                         </div>
                                         <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
                                             ${currentCart && currentCart.items && currentCart.items.length > 0 ? 
-                                                `<button type="button" class="btn btn-primary" id="place-order-btn">Place Order</button>` : 
+                                                `<button type="button" class="button btn-place-order" id="place-order-btn">Place Order</button>` : 
                                             ''}
                                         </div>
                                     </div>
@@ -743,7 +743,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             ${generateOrdersList(inProgressOrders)}
                                         </div>
                                         <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="order-history" role="tabpanel">
@@ -751,7 +751,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         ${generateOrdersList(pastOrders)}
                                         </div>
                                         <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1071,8 +1071,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                            <button type="button" class="btn btn-primary" id="confirmServiceBtn">Yes</button>
+                            <button type="button" class="button btn-no" data-dismiss="modal">No</button>
+                            <button type="button" class="button btn-yes" id="confirmServiceBtn">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -1126,7 +1126,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                         </div>
                     </div>
                 </div>
@@ -1151,7 +1151,33 @@ document.addEventListener('DOMContentLoaded', function () {
             $(this).remove();
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open').css('padding-right', '');
+    
+            // Change the service button
+            updateServiceButton();
         });
+    }
+    
+    function updateServiceButton() {
+        const serviceButton = document.querySelector('.service-btn');
+        if (serviceButton) {
+            // Save original button content and styles
+            const originalContent = serviceButton.innerHTML;
+            const originalBackgroundColor = serviceButton.style.backgroundColor;
+            const originalColor = serviceButton.style.color;
+    
+            // Update button content and styles
+            serviceButton.innerHTML = "A server will be with you shortly.";
+            // serviceButton.style.backgroundColor = "transparent";
+            // serviceButton.style.color="#E5383B";
+            // serviceButton.style.color = serviceButton.style.borderColor; // Keep the text color same as border color
+    
+            // Revert back after 20 seconds
+            setTimeout(() => {
+                serviceButton.innerHTML = originalContent;
+                serviceButton.style.backgroundColor = originalBackgroundColor;
+                serviceButton.style.color = originalColor;
+            }, 20000); // 20 seconds
+        }
     }
 
     function showPayModal() {
@@ -1177,8 +1203,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                            <button type="button" class="btn btn-primary" id="confirmPayBtn">Yes</button>
+                            <button type="button" class="button btn-no" data-dismiss="modal">No</button>
+                            <button type="button" class="button btn-yes" id="confirmPayBtn">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -1232,7 +1258,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                         </div>
                     </div>
                 </div>
@@ -1347,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                         </div>
                     </div>
                 </div>
