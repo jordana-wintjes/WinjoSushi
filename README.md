@@ -16,7 +16,7 @@ You can view our project at this [link](https://jordana-wintjes.github.io/).
 
 Please follow the steps below to run the application.
 
-Before getting started, ensure you have followed the steps to install and run our backend client [here](https://github.com/ryanwoong/WinjoSushi-Backend).
+Before getting started, ensure you have followed the steps to install and run our **backend** client [here](https://github.com/ryanwoong/WinjoSushi-Backend).
 
 #### Using Live Server (Visual Studio Code)
 - Ensure the Live Preview extension is installed
