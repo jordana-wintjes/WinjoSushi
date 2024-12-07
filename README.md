@@ -18,14 +18,19 @@ Please follow the steps below to run the application.
 
 Before getting started, ensure you have followed the steps to install and run our **backend** client [here](https://github.com/ryanwoong/WinjoSushi-Backend).
 
-#### Using Live Server (Visual Studio Code)
+## Change API Endpoint (optional)
+- Since we are using a separate hosted backend, to use the locally hosted backend you will need to change 2 variables in two different files
+- In the `scripts.js` file change `API_BASE_URL` found at the top of the file to `http://localhost:7853/api`
+- In the `api.js`, repeat the above step
+
+## Using Live Server (Visual Studio Code)
 - Ensure the Live Preview extension is installed
 - Navigate to the `index.html` file and in the top right corner click on the "Show Preview" button
 - The application should now be available for viewing at the link shown. 
 - *Default is `http://127.0.0.1:3000/index.html`*
 - *ENSURE THE BACKEND CLIENT IS RUNNING* 
 
-#### Serving using Node (http-server)
+## Serving using Node (http-server)
 - Install http-server with `npm install http-server -g`
 - In the root directory of the project open a terminal and run `http-server`
 - The project should now be available for viewing in the IPs & ports specified in the console
