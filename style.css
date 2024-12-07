@@ -702,3 +702,14 @@ hr{
     position: absolute;
     left: 10px!important; /* Move 20px to the right */
 }
+
+.badge {
+    position: absolute;
+    top: -15px; /* Move the bubble slightly above the button */
+    right: -10px; /* Move the bubble slightly to the right of the button */
+    background-color: #ff9800;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 50%;
+    z-index: 1; /* Ensure the bubble is on top of the button */
+}

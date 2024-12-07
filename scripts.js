@@ -6,6 +6,32 @@ document.addEventListener('DOMContentLoaded', function () {
     let isModifying = false;
     let lastQuantity = 1;
 
+    function addNotificationBubble(itemCount) {
+        // Remove any existing notification bubble
+        const existingBubble = document.getElementById('cartNotificationBubble');
+        if (existingBubble) {
+            existingBubble.remove();
+        }
+    
+        // Create notification bubble
+        const notificationBubble = `
+            <span id="cartNotificationBubble" class="badge">${itemCount}</span>
+        `;
+    
+        // Add notification bubble to cart button
+        const cartButton = document.querySelector('.cart-button');
+        if (cartButton) {
+            cartButton.insertAdjacentHTML('beforeend', notificationBubble);
+        }
+    }
+    function removeNotificationBubble() {
+        // Remove any existing notification bubble
+        const existingBubble = document.getElementById('cartNotificationBubble');
+        if (existingBubble) {
+            existingBubble.remove();
+        }
+    }
+    
     // Cookie management functions
     function setCookie(name, value) {
         // Set cookie to expire in exactly 24 hours
@@ -413,9 +439,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     </div>
                 `;
-
-                
-                
+        
                 // Show the confirmation modal
                 document.body.insertAdjacentHTML('beforeend', confirmationModal);
                 const $confirmationModal = $('#itemAddedConfirmation');
@@ -431,6 +455,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     $('.modal-backdrop').remove();
                     $('body').removeClass('modal-open').css('padding-right', '');
                 });
+        
+                // Check if the cart is not empty and add notification bubble
+                const currentCart = await getCurrentCart();
+                if (currentCart && currentCart.items && currentCart.items.length > 0) {
+                    addNotificationBubble(currentCart.items.length);
+                }
                 
             } catch (error) {
                 console.error('Error adding item:', error);
@@ -438,6 +468,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 storedIngredientQuantities = [];
             }
         });
+        
 
         // Single event listener for customizeItem button
         document.getElementById('customizeItem').addEventListener('click', function () {
@@ -783,6 +814,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Add event listener for place order button if cart has items
             if (currentCart?.items?.length > 0) {
                 document.getElementById('place-order-btn').addEventListener('click', () => {
+                    removeNotificationBubble();
                     placeOrder(currentCart._id);
                 });
             }
@@ -1023,11 +1055,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 100)
         });
 
-        document.getElementById('yesRemoveBtn').addEventListener('click', function() {
+        document.getElementById('yesRemoveBtn').addEventListener('click', async function() {
             $('#removeConfirmationModal').modal('hide');
-            setTimeout(() => {
+            setTimeout(async () => {
                 showCartModal(); // Show the cart modal again
-            }, 100)
+        
+                // Check if the cart is not empty and add notification bubble
+                const currentCart = await getCurrentCart();
+                if (currentCart && currentCart.items && currentCart.items.length > 0) {
+                    addNotificationBubble(currentCart.items.length);
+                }
+            }, 100);
         });
     
     
