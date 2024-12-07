@@ -267,6 +267,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <h5 class="item-price">$${item.price}</h5>
                                     </div>
                                     <p class="item-description">${item.description}</p>
+                                    <div class="modified-ingredients-section">
+                                        ${item.specialRequests ? `<h6>Special Requests:</h6><p>${item.specialRequests}</p>` : ''}
+                                        <div class="modified-ingredients-list">
+                                        ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ? `<h6>Added Ingredients:</h6>` + item.additionalIngredientsSelected.map(ingredient => `<p>${"+ " + ingredient.quantity + " " + ingredient.name + " " + "+" +ingredient.totalPrice}</p>`).join('') : ''}
+                                        ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `<h6>Removed Ingredients:</h6>` + item.uncheckedIngredients.map(ingredient => `<p>${"No " + ingredient}</p>`).join('') : ''}
+                                        </div>
+                                        
+                                    </div>
                                     
                                 </div>
                             </div>

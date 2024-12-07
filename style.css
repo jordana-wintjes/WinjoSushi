@@ -540,32 +540,39 @@ hr{
 
 .receipt-table {
     width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;
+    table-layout: fixed;
     font-size: 14px;
+}
+  .receipt-table tbody td,
+  .receipt-table thead th {
+      width: 25%;
+      text-align: center;
+  }
+
+.receipt-table tr {
+    width: 100%;
+    display: table;
 }
 
 .receipt-table thead{
     display: table;
+    width: 97%;
 }
 
-.receipt-table tbody{
+.receipt-table tbody {
     max-height: 20vh;
     width: 100%;
-    overflow-y: auto; /* Enable scrolling */
-    overflow-x: hidden;
-    display: inline-block; /* Make tbody a block-level element */
-    /*box-sizing: border-box; /* Include padding and borders in width calculation */
+    overflow-y: scroll;
+    display: block;
 }
-.receipt-table tbody td, 
-.receipt-table thead th {
-    width: 20rem;
 
-}
+
 .receipt-table tr{
     display: table;
     table-layout: fixed;
+    width: 100%;
 }
+
 
 .receipt-table th,
 .receipt-table td {
@@ -574,6 +581,7 @@ hr{
     vertical-align: top;
     box-sizing: border-box;
 }
+
 
 .receipt-table th {
     font-weight: normal;
@@ -617,3 +625,10 @@ hr{
     margin-bottom: 0;
 }
 
+.modified-ingredients-section{
+    color: white;
+    background-color:  #E5383B;
+    border-radius: 5px;
+    display: inline-block !important;
+    padding: 5px;
+}
