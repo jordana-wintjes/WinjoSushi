@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     var lightGreyBackground = document.getElementById('lightGreyBackground');
-    const API_BASE_URL = 'http://localhost:7853/api';
+    const API_BASE_URL = 'https://winjosushi-backend.onrender.com/api';
     let currentUser = null;
     let storedIngredientQuantities = [];
     let isModifying = false;
@@ -56,18 +56,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateDebugInfo() {
-        const debugElement = document.getElementById('debugInfo');
-        if (debugElement) {
-            const userId = getCookie('userId');
-            const timestamp = new Date().toLocaleTimeString();
-            if (!userId) {
-                deleteCookie('userId'); // Delete cookie if userId doesn't exist
-            }
-            debugElement.innerHTML = `
-                User ID: ${userId || 'None'}<br>
-                Last Updated: ${timestamp}
-            `;
-        }
+        // const debugElement = document.getElementById('debugInfo');
+        // if (debugElement) {
+        //     const userId = getCookie('userId');
+        //     const timestamp = new Date().toLocaleTimeString();
+        //     if (!userId) {
+        //         deleteCookie('userId'); // Delete cookie if userId doesn't exist
+        //     }
+        //     debugElement.innerHTML = `
+        //         User ID: ${userId || 'None'}<br>
+        //         Last Updated: ${timestamp}
+        //     `;
+        // }
     }
         
 
@@ -331,15 +331,47 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <h5 class="item-price" style="position: relative; left: -20px;">$${item.price}</h5>
                                 </div>
                                 <p class="item-description">${item.description}</p>
-                                ${item.specialRequests || (item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0) || (item.uncheckedIngredients && item.uncheckedIngredients.length > 0) ? `
-                                <div class="modified-ingredients-section">
-                                    ${item.specialRequests ? `<h6>Special Requests:</h6><p>${item.specialRequests}</p>` : ''}
-                                    <div class="modified-ingredients-list">
-                                    ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ? `<h6>Added Ingredients:</h6>` + item.additionalIngredientsSelected.map(ingredient => `<p>${"+ " + ingredient.quantity + " " + ingredient.name + " " + "+" +ingredient.totalPrice}</p>`).join('') : ''}
-                                    ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `<h6>Removed Ingredients:</h6>` + item.uncheckedIngredients.map(ingredient => `<p>${"No " + ingredient}</p>`).join('') : ''}
-                                    </div>
-                                </div>
-                                ` : ''}
+                                ${(() => {
+                                    // Check if there are any valid removable ingredients
+                                    const hasValidRemovedIngredients = item.removableIngredients && 
+                                        Object.entries(item.removableIngredients)
+                                            .filter(([ingredient, level]) =>
+                                                typeof ingredient === 'string' &&
+                                                (level === 'none' || level === 'light') &&
+                                                isNaN(ingredient)
+                                            ).length > 0;
+                                
+                                    // Check all conditions
+                                    const shouldShowSection = 
+                                        item.specialRequests || 
+                                        (item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0) ||
+                                        hasValidRemovedIngredients;
+                                
+                                    return shouldShowSection ? `
+                                        <div class="modified-ingredients-section">
+                                            ${item.specialRequests ? `<h6>Special Requests:</h6><p>${item.specialRequests}</p>` : ''}
+                                            <div class="modified-ingredients-list">
+                                                ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ? `
+                                                    <h6>Added Ingredients:</h6>
+                                                    ${item.additionalIngredientsSelected.map(ingredient =>
+                                                        `<p>${"+ " + ingredient.quantity + " " + ingredient.name + " " + ingredient.totalPrice}</p>`
+                                                    ).join('')}
+                                                ` : ''}
+                                                ${hasValidRemovedIngredients ? `
+                                                    <h6>Modified Ingredients:</h6>
+                                                    ${Object.entries(item.removableIngredients)
+                                                        .filter(([ingredient, level]) =>
+                                                            typeof ingredient === 'string' &&
+                                                            (level === 'none' || level === 'light') &&
+                                                            isNaN(ingredient)
+                                                        )
+                                                        .map(([ingredient, level]) => `<p>${level === 'none' ? 'No' : 'Light'} ${ingredient}</p>`)
+                                                        .join('')}
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    ` : '';
+                                })()}
                             </div>
                         </div>
     
@@ -1516,7 +1548,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        setInterval(updateDebugInfo, 30000);
+        // setInterval(updateDebugInfo, 30000);
 
         // Add event listeners for navigation buttons
         document.querySelector('.btn[data-target="#cartModal"]')?.addEventListener('click', showCartModal);
