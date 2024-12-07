@@ -300,9 +300,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </div>
                                 
                                 <div class="info-column">
-                                    <div class="header-row">
+                                    <div class="header-row d-flex align-items-center">
                                         <h5 class="modal-title">${item.name}</h5>
-                                        <h5 class="item-price">$${item.price}</h5>
+                                        <h5 class="item-price" style="position: relative; left: -20px;">$${item.price}</h5>
                                     </div>
                                     <p class="item-description">${item.description}</p>
                                     
