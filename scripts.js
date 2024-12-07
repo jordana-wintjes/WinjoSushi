@@ -176,18 +176,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // Cart management functions
-    async function addItemToCart(item, quantity, uncheckedIngredients, specialRequests) {
+    async function addItemToCart(item, quantity) {
         try {
+            // Ensure removableIngredients is an object with ingredient levels
+            const removableIngredients = {};
+            
+            // If item.removableIngredients is an array, we should NOT default to 'none'
+            // Only include ingredients that were explicitly modified in the customize modal
+            if (Array.isArray(item.removableIngredients)) {
+                // Don't set any default values - only modified ingredients will be added
+                // through the customize modal
+            } else if (typeof item.removableIngredients === 'object') {
+                // Only include ingredients that are set to 'none' or 'light'
+                Object.entries(item.removableIngredients).forEach(([ingredient, level]) => {
+                    if (level === 'none' || level === 'light') {
+                        removableIngredients[ingredient] = level;
+                    }
+                });
+            }
+    
             const requestBody = {
                 userId: currentUser._id,
                 itemId: item._id,
                 quantity: parseInt(quantity),
-                specialRequests: specialRequests || '',
+                specialRequests: item.specialRequests || '',
                 additionalIngredientsSelected: item.additionalIngredientsSelected || [],
-                uncheckedIngredients: item.uncheckedIngredients || [] // Make sure this is properly passed
+                removableIngredients: removableIngredients
             };
     
-            console.log('Request body:', requestBody);
+            console.log('Adding to cart with request body:', requestBody);
     
             const response = await fetch(`${API_BASE_URL}/carts/add-item`, {
                 method: 'POST',
@@ -204,6 +221,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
     
             const updatedCart = await response.json();
+    
+            // Reset item customizations after successfully adding to cart
+            item.additionalIngredientsSelected = [];
+            item.removableIngredients = {};
+            item.specialRequests = '';
+    
             return updatedCart;
         } catch (error) {
             console.error('Error adding item to cart:', error);
@@ -212,11 +235,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function resetCustomizations(item) {
-        item.uncheckedIngredients = [];
-        item.specialRequests = '';
-        item.additionalIngredientsSelected = [];
-        // Reset any stored quantities
-        storedIngredientQuantities = [];
+        // Only reset if we're not modifying
+        if (!isModifying) {
+            item.removableIngredients = Array.isArray(item.removableIngredients) 
+                ? []
+                : {};
+            item.additionalIngredientsSelected = [];
+            item.specialRequests = '';
+            storedIngredientQuantities = [];
+        }
     }
 
     // Scroll position management
@@ -244,6 +271,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Modal functions
     function showModal(item, imgSrc) {
 
+        if (!isModifying) {
+            item = {
+                ...item,
+                removableIngredients: Array.isArray(item.removableIngredients) 
+                    ? [...item.removableIngredients]
+                    : { ...(item.removableIngredients || {}) },
+                additionalIngredientsSelected: [...(item.additionalIngredientsSelected || [])],
+                specialRequests: item.specialRequests || ''
+            };
+        }
+    
         let currentQuantity = isModifying ? lastQuantity : 1;
 
         var modalContent = `
@@ -262,9 +300,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </div>
                                 
                                 <div class="info-column">
-                                    <div class="header-row">
+                                    <div class="header-row d-flex align-items-center">
                                         <h5 class="modal-title">${item.name}</h5>
-                                        <h5 class="item-price">$${item.price}</h5>
+                                        <h5 class="item-price" style="position: relative; left: -20px;">$${item.price}</h5>
                                     </div>
                                     <p class="item-description">${item.description}</p>
                                     <div class="modified-ingredients-section">
@@ -335,46 +373,24 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!isModifying) {
                 resetCustomizations(item);
             }
-            // Reset the flag
+            // Reset the flag   
             isModifying = false;
         });
         
 
 
         document.getElementById('addItem').addEventListener('click', async function () {
-            var quantity = document.getElementById('itemQuantity').value;
-
-            console.log('Adding item with ingredient quantities:', storedIngredientQuantities);
-
+            const quantity = document.getElementById('itemQuantity').value;
+        
             try {
-                // Handle uncheckedIngredients properly
-                const removedIngredients = Array.isArray(item.uncheckedIngredients) 
-                    ? item.uncheckedIngredients 
-                    : (item.uncheckedIngredients ? [item.uncheckedIngredients] : []);
-                    
-                    
-                await addItemToCart(
-                    item,
-                    quantity,
-                    removedIngredients,
-                    item.specialRequests
-                );
-
-                item.additionalIngredientsSelected = [];
-                item.specialRequests = '';
-
+                await addItemToCart(item, quantity);
+                
                 $('#itemModal').modal('hide');
-
-                // Reset the stored quantities after we're done with them
-                storedIngredientQuantities = [];
+        
+                // Reset stored quantities
+                resetCustomizations(item);
                 
-                // Remove any existing confirmation modal
-                const existingConfirmation = document.getElementById('itemAddedConfirmation');
-                if (existingConfirmation) {
-                    existingConfirmation.remove();
-                }
-                
-                // Create and show the confirmation modal
+                // Show confirmation modal
                 const confirmationModal = `
                     <div class="modal fade" id="itemAddedConfirmation" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -391,27 +407,25 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                                    <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
+
                 
-                // Add the confirmation modal to the body
-                document.body.insertAdjacentHTML('beforeend', confirmationModal);
                 
                 // Show the confirmation modal
+                document.body.insertAdjacentHTML('beforeend', confirmationModal);
                 const $confirmationModal = $('#itemAddedConfirmation');
                 $confirmationModal.modal({
                     backdrop: true,
                     keyboard: false
                 });
                 
-                // Remove padding-right that Bootstrap adds
                 document.body.style.paddingRight = '0px';
                 
-                // Clean up modal on close
                 $confirmationModal.on('hidden.bs.modal', function () {
                     $(this).remove();
                     $('.modal-backdrop').remove();
@@ -420,6 +434,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
             } catch (error) {
                 console.error('Error adding item:', error);
+                // You might want to show an error message to the user here
                 storedIngredientQuantities = [];
             }
         });
@@ -435,8 +450,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.querySelector('.button-cancel').addEventListener('click', function() {
             // Reset all customizations
-            item.additionalIngredientsSelected = [];
-            item.specialRequests = '';
+            resetCustomizations(item);
             // Hide the modal
             $('#itemModal').modal('hide');
         });
@@ -458,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const customizeModalContent = `
             <div class="customize-modal" id="customizeModal" tabindex="-1" role="dialog">
                 <div class="customize-modal-content">
-                    <button type="button" class="customize-close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close customize-close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     
@@ -473,12 +487,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <textarea placeholder="Tap to begin typing any special requests, allergies, etc.">${item.specialRequests || ''}</textarea>
                             </div>
                         </div>
-    
+        
                         <div class="right-column">
                             <div class="customize-header">
                                 <h2 class="customize-title">${item.name}</h2>
                             </div>
-    
+        
                             <div class="customize-ingredients">
                                 <h2 class="requests-title">Extras</h2>
                                 ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
@@ -501,23 +515,38 @@ document.addEventListener('DOMContentLoaded', function () {
                                     `;
                                 }).join('') : ''}
                             </div>
-    
+        
                             <div class="customize-ingredients">
-                                <h2 class="requests-title">Removable Ingredients</h2>
-                                ${item.removableIngredients ? item.removableIngredients.map(ingredient => `
-                                    <div class="ingredient-row" data-ingredient="${ingredient}">
-                                        <label class="ingredient-checkbox">
-                                            <input type="checkbox"
-                                                class="ingredient-toggle"
-                                                data-ingredient="${ingredient}">
+                                <h2 class="requests-title">Ingredient Preferences</h2>
+                                ${Array.isArray(item.removableIngredients) ?
+                                    item.removableIngredients.map(ingredient => {
+                                        const currentLevel = item.removableIngredientLevels?.[ingredient] || 'regular';
+                                        return `
+                                            <div class="ingredient-row" data-ingredient="${ingredient}">
+                                                <span class="ingredient-name">${ingredient}</span>
+                                                <div class="ingredient-level-control">
+                                                    <button class="level-btn decrease-level" data-ingredient="${ingredient}">-</button>
+                                                    <span class="level-value" data-ingredient="${ingredient}" data-level="${currentLevel}">${currentLevel}</span>
+                                                    <button class="level-btn increase-level" data-ingredient="${ingredient}">+</button>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('') :
+                                    Object.entries(item.removableIngredients || {}).map(([ingredient, level]) => `
+                                        <div class="ingredient-row" data-ingredient="${ingredient}">
                                             <span class="ingredient-name">${ingredient}</span>
-                                        </label>
-                                    </div>
-                                `).join('') : ''}
+                                            <div class="ingredient-level-control">
+                                                <button class="level-btn decrease-level" data-ingredient="${ingredient}">-</button>
+                                                <span class="level-value" data-ingredient="${ingredient}" data-level="${level}">${level}</span>
+                                                <button class="level-btn increase-level" data-ingredient="${ingredient}">+</button>
+                                            </div>
+                                        </div>
+                                    `).join('')
+                                }
                             </div>
                                 
                             <div class="modal-actions">
-                                <button class="done-btn">Done</button>
+                                <button class="button done-btn">Done</button>
                             </div>
                         </div>
                     </div>
@@ -536,13 +565,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const quantityValue = row.querySelector('.quantity-value');
             const totalPriceElement = row.querySelector('.total-price');
             
-            if (row.dataset.price) {
+            if (row.dataset.price && decreaseBtn && increaseBtn && quantityValue && totalPriceElement) {
                 const basePrice = parseFloat(row.dataset.price);
                 const updateTotalPrice = (quantity) => {
                     const total = (basePrice * quantity).toFixed(2);
                     totalPriceElement.textContent = `$${total}`;
                 };
-    
+
                 decreaseBtn.addEventListener('click', () => {
                     let value = parseInt(quantityValue.textContent);
                     if (value > 0) {
@@ -551,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         updateTotalPrice(value);
                     }
                 });
-    
+
                 increaseBtn.addEventListener('click', () => {
                     let value = parseInt(quantityValue.textContent);
                     value++;
@@ -561,33 +590,46 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     
-        // Handle removable ingredients checkboxes
-        const ingredientCheckboxes = modal.querySelectorAll('.ingredient-toggle');
-        ingredientCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const ingredient = this.dataset.ingredient;
-                
-                // Initialize uncheckedIngredients array if it doesn't exist
-                if (!item.uncheckedIngredients) {
-                    item.uncheckedIngredients = [];
-                }
+        // Handle ingredient level controls
+        const levelControls = modal.querySelectorAll('.ingredient-level-control');
+        levelControls.forEach(control => {
+            const decreaseBtn = control.querySelector('.decrease-level');
+            const increaseBtn = control.querySelector('.increase-level');
+            const levelValue = control.querySelector('.level-value');
+            
+            if (decreaseBtn && increaseBtn && levelValue) {
+                const ingredient = control.closest('.ingredient-row').dataset.ingredient;
 
-                // When checkbox is checked by user, add ingredient to uncheckedIngredients
-                if (this.checked) {
-                    if (!item.uncheckedIngredients.includes(ingredient)) {
-                        item.uncheckedIngredients.push(ingredient);
-                        console.log(`Added ${ingredient} to unchecked ingredients`);
-                    }
-                } else {
-                    // Remove from unchecked ingredients when unchecked
-                    item.uncheckedIngredients = item.uncheckedIngredients.filter(ing => ing !== ingredient);
-                    console.log(`Removed ${ingredient} from unchecked ingredients`);
-                }
+                const levels = ['none', 'light', 'regular'];
                 
-                console.log('Current unchecked ingredients:', item.uncheckedIngredients);
-            });
+                decreaseBtn.addEventListener('click', () => {
+                    const currentIndex = levels.indexOf(levelValue.textContent);
+                    if (currentIndex > 0) {
+                        const newLevel = levels[currentIndex - 1];
+                        levelValue.textContent = newLevel;
+                        if (!item.removableIngredients) {
+                            item.removableIngredients = {};
+                        }
+                        item.removableIngredients[ingredient] = newLevel;
+                        levelValue.setAttribute('data-level', newLevel);
+                    }
+                });
+
+                increaseBtn.addEventListener('click', () => {
+                    const currentIndex = levels.indexOf(levelValue.textContent);
+                    if (currentIndex < levels.length - 1) {
+                        const newLevel = levels[currentIndex + 1];
+                        levelValue.textContent = newLevel;
+                        if (!item.removableIngredients) {
+                            item.removableIngredients = {};
+                        }
+                        item.removableIngredients[ingredient] = newLevel;
+                        levelValue.setAttribute('data-level', newLevel);
+                    }
+                });
+            }
         });
-    
+        
         // Handle close button
         const closeBtn = modal.querySelector('.customize-close');
         closeBtn.addEventListener('click', () => {
@@ -598,38 +640,64 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Handle done button
         const doneBtn = modal.querySelector('.done-btn');
-        doneBtn.addEventListener('click', () => {
-            // Get selected additional ingredients
-            const additionalIngredientRows = modal.querySelectorAll('.ingredient-row[data-price]');
-            const selectedIngredients = Array.from(additionalIngredientRows)
-                .map(row => {
-                    const quantity = parseInt(row.querySelector('.quantity-value').textContent);
-                    if (quantity > 0) {
-                        return {
-                            name: row.querySelector('.ingredient-name').textContent,
-                            quantity: quantity,
-                            totalPrice: row.querySelector('.total-price').textContent
-                        };
-                    }
-                    return null;
-                })
-                .filter(ing => ing !== null);
-    
-            // Get special requests
-            const specialRequests = modal.querySelector('textarea').value;
-    
-            // Update the item object with all customizations
-            item.additionalIngredientsSelected = selectedIngredients;
-            // Note: uncheckedIngredients is already being updated through checkbox event listeners
-            item.specialRequests = specialRequests;
-    
-            // Close customize modal and show main modal
-            modal.remove();
-            isModifying = true;
-            showModal(item, item.image);
-        });
-    
-        document.body.style.paddingRight = '0px';
+        if (doneBtn) {
+            doneBtn.addEventListener('click', () => {
+                try {
+                    // Get selected additional ingredients
+                    const additionalIngredientRows = modal.querySelectorAll('.ingredient-row[data-price]');
+                    const selectedIngredients = Array.from(additionalIngredientRows)
+                        .map(row => {
+                            const quantityElement = row.querySelector('.quantity-value');
+                            const totalPriceElement = row.querySelector('.total-price');
+                            if (quantityElement && totalPriceElement) {
+                                const quantity = parseInt(quantityElement.textContent);
+                                if (quantity > 0) {
+                                    return {
+                                        name: row.dataset.ingredient,
+                                        quantity: quantity,
+                                        totalPrice: totalPriceElement.textContent
+                                    };
+                                }
+                            }
+                            return null;
+                        })
+                        .filter(ing => ing !== null);
+
+                    // Get ingredient levels for removable ingredients
+                    // Only store levels that are 'none' or 'light'
+                    const ingredientLevels = {};
+                    modal.querySelectorAll('.ingredient-row[data-ingredient]').forEach(row => {
+                        const levelElement = row.querySelector('.level-value');
+                        if (row.dataset.ingredient && levelElement) {
+                            const level = levelElement.textContent;
+                            // Only add to ingredientLevels if the level is 'none' or 'light'
+                            if (level === 'none' || level === 'light') {
+                                ingredientLevels[row.dataset.ingredient] = level;
+                            }
+                        }
+                    });
+
+                    // Get special requests
+                    const textArea = modal.querySelector('textarea');
+                    const specialRequests = textArea ? textArea.value : '';
+
+                    // Update the item object with all customizations
+                    item.additionalIngredientsSelected = selectedIngredients;
+                    item.removableIngredients = ingredientLevels; // Now only contains non-regular values
+                    item.specialRequests = specialRequests;
+
+                    // Close the customize modal and return to main modal
+                    modal.remove();
+                    isModifying = true;
+                    showModal(item, item.image);
+                } catch (error) {
+                    console.error('Error in done button handler:', error);
+                    modal.remove();
+                    isModifying = true;
+                    showModal(item, item.image);
+                }
+            });
+        }
     }
 
     async function showCartModal() {
@@ -672,9 +740,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <div id="cart-total" class="mt-3">
                                         </div>
                                         <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
                                             ${currentCart && currentCart.items && currentCart.items.length > 0 ? 
-                                                `<button type="button" class="btn btn-primary" id="place-order-btn">Place Order</button>` : 
+                                                `<button type="button" class="button btn-place-order" id="place-order-btn">Place Order</button>` : 
                                             ''}
                                         </div>
                                     </div>
@@ -683,7 +751,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             ${generateOrdersList(inProgressOrders)}
                                         </div>
                                         <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="order-history" role="tabpanel">
@@ -691,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         ${generateOrdersList(pastOrders)}
                                         </div>
                                         <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -782,17 +850,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </td>
                                     </tr>
                                 ` : ''}
-                                ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `
+                                ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
                                     <tr class="modification-row">
                                         <td colspan="4">
-                                            <div class="removed-ingredients">
-                                                <p class="mb-1"><strong>Removed Ingredients:</strong></p>
-                                                ${item.uncheckedIngredients
-                                                    .map(ing => `
-                                                        <div class="ingredient-item">
-                                                            ${ing}
-                                                        </div>
-                                                    `).join('')}
+                                            <div class="ingredient-modifications">
+                                                <p class="mb-1"><strong>Ingredient Modifications:</strong></p>
+                                                ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
+                                                    <div class="ingredient-item">
+                                                        ${ingredient}: ${level}
+                                                    </div>
+                                                `).join('')}
                                             </div>
                                         </td>
                                     </tr>
@@ -825,13 +892,21 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
     function generateCartContent(cart) {
+        console.log(cart)
         if (!cart || !cart.items || cart.items.length === 0) {
             return '<p>Your cart is empty</p>';
         }
     
         let content = `
             <table class="receipt-table">
-                <!-- ... existing table headers ... -->
+                <thead>
+                    <tr>
+                        <th class="item-col">Item</th>
+                        <th class="price-col">Price</th>
+                        <th class="quantity-col">Quantity</th>
+                        <th class="remove-col"></th>
+                    </tr>
+                </thead>
                 <tbody class="cartItems">
                     ${cart.items.map(item => `
                         <tr>
@@ -851,7 +926,22 @@ document.addEventListener('DOMContentLoaded', function () {
                             </td>
                         </tr>
                         
-                        ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
+                        ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
+                            <tr class="modification-row">
+                                <td colspan="4">
+                                    <div class="ingredient-modifications">
+                                        <p class="mb-1"><strong>Ingredient Modifications:</strong></p>
+                                        ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
+                                            <div class="ingredient-item">
+                                                ${ingredient}: ${level}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </td>
+                            </tr>
+                        ` : ''}
+                        
+                        ${item.additionalIngredients && item.additionalIngredients.length > 0 ? `
                             <tr class="modification-row">
                                 <td colspan="4">
                                     <div class="additional-ingredients">
@@ -860,23 +950,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             .filter(ing => ing.quantity > 0)
                                             .map(ing => `
                                                 <div class="ingredient-item">
-                                                    ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
-                                                </div>
-                                            `).join('')}
-                                    </div>
-                                </td>
-                            </tr>
-                        ` : ''}
-                        
-                        ${item.uncheckedIngredients && item.uncheckedIngredients.length > 0 ? `
-                            <tr class="modification-row">
-                                <td colspan="4">
-                                    <div class="removed-ingredients">
-                                        <p class="mb-1"><strong>Removed Ingredients:</strong></p>
-                                        ${item.uncheckedIngredients
-                                            .map(ing => `
-                                                <div class="ingredient-item">
-                                                    ${ing}
+                                                    ${ing.ingredient} (Qty: ${ing.quantity}) - $${ing.price.toFixed(2)}
                                                 </div>
                                             `).join('')}
                                     </div>
@@ -1005,8 +1079,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                            <button type="button" class="btn btn-primary" id="confirmServiceBtn">Yes</button>
+                            <button type="button" class="button btn-no" data-dismiss="modal">No</button>
+                            <button type="button" class="button btn-yes" id="confirmServiceBtn">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -1060,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                         </div>
                     </div>
                 </div>
@@ -1085,7 +1159,33 @@ document.addEventListener('DOMContentLoaded', function () {
             $(this).remove();
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open').css('padding-right', '');
+    
+            // Change the service button
+            updateServiceButton();
         });
+    }
+    
+    function updateServiceButton() {
+        const serviceButton = document.querySelector('.service-btn');
+        if (serviceButton) {
+            // Save original button content and styles
+            const originalContent = serviceButton.innerHTML;
+            const originalBackgroundColor = serviceButton.style.backgroundColor;
+            const originalColor = serviceButton.style.color;
+    
+            // Update button content and styles
+            serviceButton.innerHTML = "A server will be with you shortly.";
+            // serviceButton.style.backgroundColor = "transparent";
+            // serviceButton.style.color="#E5383B";
+            // serviceButton.style.color = serviceButton.style.borderColor; // Keep the text color same as border color
+    
+            // Revert back after 20 seconds
+            setTimeout(() => {
+                serviceButton.innerHTML = originalContent;
+                serviceButton.style.backgroundColor = originalBackgroundColor;
+                serviceButton.style.color = originalColor;
+            }, 20000); // 20 seconds
+        }
     }
 
     function showPayModal() {
@@ -1111,8 +1211,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                            <button type="button" class="btn btn-primary" id="confirmPayBtn">Yes</button>
+                            <button type="button" class="button btn-no" data-dismiss="modal">No</button>
+                            <button type="button" class="button btn-yes" id="confirmPayBtn">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -1166,7 +1266,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                         </div>
                     </div>
                 </div>
@@ -1281,7 +1381,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="button btn-ok" data-dismiss="modal">OK</button>
                         </div>
                     </div>
                 </div>
@@ -1336,7 +1436,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     image: item.imageUrl,
                     _id: item.id,
                     ingredients: item.ingredients,
-                    removableIngredients: item.removableIngredients,
+                    // Ensure removableIngredients is always in a consistent format
+                    removableIngredients: Array.isArray(item.removableIngredients) 
+                        ? item.removableIngredients
+                        : Object.keys(item.removableIngredients || {}),
                     additionalIngredients: item.additionalIngredients.map(addon => ({
                         ingredient: addon.ingredient,
                         price: addon.price
