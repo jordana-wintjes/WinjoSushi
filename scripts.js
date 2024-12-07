@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     `).join('')
                                 }
                             </div>
-                            
+
                             <div class="customize-ingredients">
                                 <h2 class="requests-title">Additions</h2>
                                 ${item.additionalIngredients ? item.additionalIngredients.map(addon => {
@@ -949,7 +949,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function generateCartContent(cart) {
         console.log(cart)
         if (!cart || !cart.items || cart.items.length === 0) {
-            return '<p>Your cart is empty</p>';
+            return '<p class= "text-center  my-3">Your cart is empty</p>';
         }
     
         let content = `
