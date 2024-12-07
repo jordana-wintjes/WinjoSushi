@@ -177,7 +177,7 @@ html, body {
 }
 
 .modal-content {
-    background-color: #E7D8C9;
+    background-color: #F7EFE7;
     border-radius: 8px;
     min-height: 500px;
     padding: 25px;
@@ -338,17 +338,21 @@ hr{
 }
 
 .button-cancel {
-    background-color: #f0f0f0;
+    background-color: white;
+    border: 2px solid #E5383B;
+    color: #E5383B;
 }
 
 .button-modify {
-    background-color: #f0f0f0;
+    background-color: white;
+    border: 2px solid #FDA50F;
+    color: #FDA50F;
 }
 
 .button-add {
     background-color: white;
-    border: 1px solid black;
-    color: black;
+    border: 2px solid green;
+    color: green;
 }
 
 .customize-modal {
@@ -365,7 +369,7 @@ hr{
 }
 
 .customize-modal-content {
-    background-color: #f5e6da;
+    background-color: #F7EFE7;
     border-radius: 8px;
     padding: 25px;
     position: relative;
@@ -378,7 +382,7 @@ hr{
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 20px;
+    font-size: 50px;
     z-index: 1;
     background: none;
     border: none;
@@ -512,8 +516,9 @@ hr{
 .done-btn {
     padding: 8px 20px;
     border-radius: 4px;
-    border: 1px solid #000;
+    border: 2px solid green;
     background: white;
+    color: green;
     cursor: pointer;
     font-size: 1.3rem;
 }
