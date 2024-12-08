@@ -163,8 +163,9 @@ html, body {
     justify-content: flex-start;
     gap: 20px;
     border: 1px solid black;
-    border-radius: 3px;
+    border-radius: 10px;
     margin-bottom: 1vh;
+    background-color: #F7EFE7;
 }
 
 /* Menu List Styles */
