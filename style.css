@@ -162,9 +162,9 @@ html, body {
     flex-direction: row;
     justify-content: flex-start;
     gap: 20px;
-}
-.cartCost{
-    /* margin-top: 30px; */
+    border: 1px solid black;
+    border-radius: 3px;
+    margin-bottom: 1vh;
 }
 
 /* Menu List Styles */
@@ -691,6 +691,8 @@ hr{
 
 .modification-row td {
     padding: 0.5rem 1rem;
+    text-align: left !important;
+
 }
 
 .receipt-table tr:not(:last-child) {
@@ -766,4 +768,14 @@ hr{
     padding: 3px 6px;
     border-radius: 50%;
     z-index: 1; /* Ensure the bubble is on top of the button */
+}
+
+.bottom-cart-content{
+    display: flex;
+    flex-direction: row ;
+    justify-content: space-between;
+}
+
+.modal-footer{
+    align-items: end;
 }
