@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 ${item.specialRequests ? `<p>• ${item.specialRequests}</p>` : ''}
                                                 ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ?
                                                     item.additionalIngredientsSelected.map(ingredient =>
-                                                        `<p>• ${"+ " + ingredient.quantity + " " + ingredient.name + " " + ingredient.totalPrice}</p>`
+                                                        `<p>• ${"+" + ingredient.quantity + " " + ingredient.name + " " + ingredient.totalPrice}</p>`
                                                     ).join('') : ''}
                                                 ${hasValidRemovedIngredients ?
                                                     Object.entries(item.removableIngredients)

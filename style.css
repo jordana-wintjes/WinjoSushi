@@ -720,13 +720,35 @@ hr{
     margin-bottom: 0;
 }
 
-.modified-ingredients-section{
-    color: white;
-    background-color:  #dc3545;
-    border-radius: 5px;
+.modified-ingredients-section {
+    /* Remove existing background and color */
+    background: #e6d9cb; /* Semi-transparent white */
+    backdrop-filter: blur(8px); /* Creates the frosted glass effect */
+    -webkit-backdrop-filter: blur(8px); /* For Safari support */
+    border-radius: 10px;
+    border: 1px solid #e6d9cb;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+                0 1px 3px rgba(0, 0, 0, 0.08);
+    color: #333; /* Dark text for better readability */
     display: inline-block !important;
-    padding: 5px;
+    padding: 10px 15px;
+    margin: 10px 0;
 }
+
+.modified-ingredients-section h6 {
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.modified-ingredients-list {
+    margin-left: 15px;
+}
+
+.modified-ingredients-list p {
+    margin: 4px 0;
+    color: #444;
+}
+
 .ingredient-level-control {
     display: flex;
     align-items: center;
