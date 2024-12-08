@@ -892,54 +892,50 @@ document.addEventListener('DOMContentLoaded', function () {
                         </tr>
                     </thead>
                     <tbody>
-                        ${orders.flatMap(order =>
-                            order.items.map(item => `
-                                <tr>
-                                    <td>${formatOrderDate(order)}</td>
-                                    <td>${item.name}</td>
-                                    <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
-                                    <td>${item.quantity}</td>
-                                </tr>
-                                ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
-                                    <tr class="modification-row">
-                                        <td colspan="4">
-                                            <div class="additional-ingredients">
-                                                <p class="mb-1"><strong>Additional Ingredients:</strong></p>
-                                                ${item.additionalIngredients
-                                                    .filter(ing => ing.quantity > 0)
-                                                    .map(ing => `
-                                                        <div class="ingredient-item">
-                                                            ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
-                                                        </div>
-                                                    `).join('')}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ` : ''}
-                                ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
-                                    <tr class="modification-row">
-                                        <td colspan="4">
-                                            <div class="ingredient-modifications">
-                                                <p class="mb-1"><strong>Ingredient Modifications:</strong></p>
-                                                ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
-                                                    <div class="ingredient-item">
-                                                        ${ingredient}: ${level}
+                        <tr>
+                            <td colspan="4">
+
+                            ${orders.flatMap(order =>
+                                order.items.map(item => `
+                                    <div class="cart-item">
+                                        <table class="cart-item-table">
+                                            <tr class="modification-row">
+                                                <tr>
+                                                    <td>${formatOrderDate(order)}</td>
+                                                    <td>${item.name}</td>
+                                                    <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
+                                                    <td>${item.quantity}</td>
+                                                </tr>
+                                                ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
+                                                    <div class="additional-ingredients">
+                                                        ${item.additionalIngredients
+                                                            .filter(ing => ing.quantity > 0)
+                                                            .map(ing => `
+                                                                <div class="ingredient-item">
+                                                                    ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
+                                                                </div>
+                                                            `).join('')}
                                                     </div>
-                                                `).join('')}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ` : ''}
-                                ${item.specialInstructions ? `
-                                    <tr class="modification-row">
-                                        <td colspan="4">
-                                            <p class="mb-1"><strong>Special Instructions:</strong></p>
-                                            <p class="special-instructions">${item.specialInstructions}</p>
-                                        </td>
-                                    </tr>
-                                ` : ''}
-                            `).join('')
-                        ).join('')}
+                                                ` : ''}
+                                                ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
+                                                    <div class="ingredient-modifications">
+                                                        ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
+                                                            <div class="ingredient-item">
+                                                                ${ingredient}: ${level}
+                                                            </div>
+                                                        `).join('')}
+                                                    </div>
+                                                ` : ''}
+                                                ${item.specialInstructions ? `
+                                                    <div class="ingredient-item"> ${item.specialInstructions}</div>
+                                                ` : ''}
+                                            </tr>
+                                        </table>
+                                    </div>
+                                `).join('')
+                            ).join('')}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <hr>
