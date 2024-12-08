@@ -213,6 +213,10 @@ html, body {
     width: 120px;
 }
 
+.modified-ingredients-list {
+    margin-left: 30px;
+}
+
 /* Tab Styles */
 .tab-pane {
     margin-left: 15px;

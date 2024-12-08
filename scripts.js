@@ -351,10 +351,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <div class="modified-ingredients-section">
                                             <h6 class><strong>Customizations:</strong></h6>
                                             <div class="modified-ingredients-list">
-                                                ${item.specialRequests ? `<p>${item.specialRequests}</p>` : ''}
+                                                ${item.specialRequests ? `<p>• ${item.specialRequests}</p>` : ''}
                                                 ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ?
                                                     item.additionalIngredientsSelected.map(ingredient =>
-                                                        `<p>${"+ " + ingredient.quantity + " " + ingredient.name + " " + ingredient.totalPrice}</p>`
+                                                        `<p>• ${"+ " + ingredient.quantity + " " + ingredient.name + " " + ingredient.totalPrice}</p>`
                                                     ).join('') : ''}
                                                 ${hasValidRemovedIngredients ?
                                                     Object.entries(item.removableIngredients)
@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                             (level === 'none' || level === 'light') &&
                                                             isNaN(ingredient)
                                                         )
-                                                        .map(([ingredient, level]) => `<p>${level === 'none' ? 'No' : 'Light'} ${ingredient}</p>`)
+                                                        .map(([ingredient, level]) => `<p>• ${level === 'none' ? 'No' : 'Light'} ${ingredient}</p>`)
                                                         .join('') : ''}
                                             </div>
                                         </div>
