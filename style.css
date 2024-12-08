@@ -619,11 +619,15 @@ hr{
 .text-center{
     font-size: 1rem;
 }
-  .receipt-table tbody td,
-  .receipt-table thead th {
-      width: 25%;
-      text-align: center;
-  }
+.receipt-table tbody td,
+.receipt-table thead th {
+    width: 25%;
+    text-align: left;
+}
+
+.receipt-table tbody td:last-child{
+    text-align: center;
+}
 
 .receipt-table tr {
     width: 100%;
@@ -775,6 +779,11 @@ hr{
     flex-direction: row ;
     justify-content: space-between;
 }
+.right-corner {
+    justify-content: flex-end; /* Align horizontally to the right */
+    align-items: flex-end; /* Align vertically to the bottom */
+}
+  
 
 .modal-footer{
     align-items: end;

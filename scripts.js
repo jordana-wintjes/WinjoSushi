@@ -894,42 +894,43 @@ document.addEventListener('DOMContentLoaded', function () {
                     <tbody>
                         <tr>
                             <td colspan="4">
-
                             ${orders.flatMap(order =>
-                                order.items.map(item => `
+                                order.items.map(item => `   
                                     <div class="cart-item">
-                                        <table class="cart-item-table">
-                                            <tr class="modification-row">
+                                        <table>
                                                 <tr>
                                                     <td>${formatOrderDate(order)}</td>
                                                     <td>${item.name}</td>
                                                     <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
                                                     <td>${item.quantity}</td>
                                                 </tr>
-                                                ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
-                                                    <div class="additional-ingredients">
-                                                        ${item.additionalIngredients
-                                                            .filter(ing => ing.quantity > 0)
-                                                            .map(ing => `
-                                                                <div class="ingredient-item">
-                                                                    ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
-                                                                </div>
-                                                            `).join('')}
-                                                    </div>
-                                                ` : ''}
-                                                ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
-                                                    <div class="ingredient-modifications">
-                                                        ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
-                                                            <div class="ingredient-item">
-                                                                ${ingredient}: ${level}
+                                                <tr class="modification-row">
+                                                    <td colspan="4">
+                                                        ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
+                                                            <div class="additional-ingredients">
+                                                                ${item.additionalIngredients
+                                                                    .filter(ing => ing.quantity > 0)
+                                                                    .map(ing => `
+                                                                        <div class="ingredient-item">
+                                                                            • ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
+                                                                        </div>
+                                                                    `).join('')}
                                                             </div>
-                                                        `).join('')}
-                                                    </div>
-                                                ` : ''}
-                                                ${item.specialInstructions ? `
-                                                    <div class="ingredient-item"> ${item.specialInstructions}</div>
-                                                ` : ''}
-                                            </tr>
+                                                        ` : ''}
+                                                        ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
+                                                            <div class="ingredient-modifications">
+                                                                ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
+                                                                    <div class="ingredient-item">
+                                                                        • ${ingredient}: ${level}
+                                                                    </div>
+                                                                `).join('')}
+                                                            </div>
+                                                        ` : ''}
+                                                        ${item.specialInstructions ? `
+                                                            <div class="ingredient-item"> • ${item.specialInstructions}</div>
+                                                        ` : ''}
+                                                    </td>
+                                                </tr>
                                         </table>
                                     </div>
                                 `).join('')
@@ -939,14 +940,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     </tbody>
                 </table>
                 <hr>
-                ${isPastOrders ? `
-                <div class="cartCost">
-                    <h5>Number of Items: ${itemCount}</h5>
-                    <h5>Subtotal: $${formattedSubtotal}</h5>
-                    <h5>Tax: $${tax}</h5>
-                    <h5>Total: $${total}</h5>
+                <div class="bottom-cart-content">
+                    ${isPastOrders ? `
+                    <div class="cartCost">
+                        <h5>Number of Items: ${itemCount}</h5>
+                        <h5>Subtotal: $${formattedSubtotal}</h5>
+                        <h5>Tax: $${tax}</h5>
+                        <h5>Total: $${total}</h5>
+                    </div>
+                    ` : ''}
                 </div>
-                ` : ''}
             </div>
         `;
     }
@@ -1001,33 +1004,33 @@ document.addEventListener('DOMContentLoaded', function () {
                                             </td>
                                         </tr>
                                         <tr class="modification-row">
-                                        <td colspan="4">
-                                        ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
-                                            <div class="ingredient-modifications">
-                                                ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
-                                                    <div class="ingredient-item">
-                                                        • ${ingredient}: ${level}
+                                            <td colspan="4">
+                                                ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
+                                                    <div class="ingredient-modifications">
+                                                        ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
+                                                            <div class="ingredient-item">
+                                                                • ${ingredient}: ${level}
+                                                            </div>
+                                                        `).join('')}
                                                     </div>
-                                                `).join('')}
-                                            </div>
-                                        ` : ''}
+                                                ` : ''}
 
-                                        ${item.additionalIngredients && item.additionalIngredients.length > 0 ? `
-                                            <div class="additional-ingredients">
-                                                ${item.additionalIngredients
-                                                    .filter(ing => ing.quantity > 0)
-                                                    .map(ing => `
-                                                        <div class="ingredient-item">
-                                                            • ${ing.ingredient} (Qty: ${ing.quantity}) - $${ing.price.toFixed(2)}
-                                                        </div>
-                                                    `).join('')}
-                                            </div>
-                                        ` : ''}
+                                                ${item.additionalIngredients && item.additionalIngredients.length > 0 ? `
+                                                    <div class="additional-ingredients">
+                                                        ${item.additionalIngredients
+                                                            .filter(ing => ing.quantity > 0)
+                                                            .map(ing => `
+                                                                <div class="ingredient-item">
+                                                                    • ${ing.ingredient} (Qty: ${ing.quantity}) - $${ing.price.toFixed(2)}
+                                                                </div>
+                                                            `).join('')}
+                                                    </div>
+                                                ` : ''}
 
-                                        ${item.specialInstructions ? `
-                                            <div class="ingredient-item"> • ${item.specialInstructions}</div>
-                                        ` : ''}
-                                        </td>
+                                                ${item.specialInstructions ? `
+                                                    <div class="ingredient-item"> • ${item.specialInstructions}</div>
+                                                ` : ''}
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>
