@@ -899,7 +899,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                     <td>${formatOrderDate(order)}</td>
                                                     <td>${item.name}</td>
                                                     <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
-                                                    <td>${item.quantity}</td>
+                                                    <td class = "item-quantity-progress">${item.quantity}</td>
                                                 </tr>
                                                 <tr class="modification-row">
                                                     <td colspan="4">

@@ -599,7 +599,8 @@ hr{
 .quantity-value {
     width: 20px;
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1rem;
+    margin-left: 27px;
 }
 
 .modal-actions {
