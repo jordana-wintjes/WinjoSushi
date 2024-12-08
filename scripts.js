@@ -1259,7 +1259,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Update button content and styles
             serviceButton.innerHTML = "A server will be with you shortly.";
             // serviceButton.style.backgroundColor = "transparent";
-            // serviceButton.style.color="#E5383B";
+            // serviceButton.style.color="#dc3545";
             // serviceButton.style.color = serviceButton.style.borderColor; // Keep the text color same as border color
     
             // Revert back after 20 seconds

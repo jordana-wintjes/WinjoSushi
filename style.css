@@ -102,7 +102,7 @@ html, body {
 /* Menu List Styles */
 /* .list-group-item {
     background-color: white;
-    border: 1px solid #E5383B;
+    border: 1px solid #dc3545;
     font-size: 1.25rem;
     padding: 1rem 1.5rem;
     color: #495057;
@@ -110,14 +110,14 @@ html, body {
 /* 
 .list-group-item:hover {
     background-color: rgba(229, 56, 59, 0.2);
-    color: #E5383B;
-    border-color: #E5383B;
+    color: #dc3545;
+    border-color: #dc3545;
 }
 
 .list-group-item.active {
     background-color: rgba(229, 56, 59, 0.2);
-    color: #E5383B;
-    border-color: #E5383B;
+    color: #dc3545;
+    border-color: #dc3545;
 } */
 
 /* Button Styles */
@@ -134,7 +134,7 @@ html, body {
 
 .nav-link {
     background-color: transparent;
-    border: 1px solid #E5383B!important;
+    border: 1px solid #dc3545!important;
     font-size: 1.25rem!important;
     padding: 1rem 1.5rem!important;
     color: #495057!important;
@@ -147,14 +147,14 @@ html, body {
 }
 .nav-link:hover {
     background-color: rgba(229, 56, 59, 0.2)!important;
-    color: #E5383B!important;
-    border-color: #E5383B!important;
+    color: #dc3545!important;
+    border-color: #dc3545!important;
 }
 
 .nav-link.active{
     background-color: rgba(229, 56, 59, 0.2)!important;
-    color: #E5383B!important;
-    border-color: #E5383B!important;
+    color: #dc3545!important;
+    border-color: #dc3545!important;
 }
 
 .cart-item{
@@ -170,7 +170,7 @@ html, body {
 /* Menu List Styles */
 .list-group-item {
     background-color: white;
-    border: 1px solid #E5383B;
+    border: 1px solid #dc3545;
     font-size: 1.25rem;
     padding: 1rem 1.5rem;
     color: #495057;
@@ -178,14 +178,22 @@ html, body {
 
 .list-group-item:hover {
     background-color: rgba(229, 56, 59, 0.2);
-    color: #E5383B;
-    border-color: #E5383B;
+    color: #dc3545;
+    border-color: #dc3545;
 }
 
 .list-group-item.active {
     background-color: rgba(229, 56, 59, 0.2);
-    color: #E5383B;
-    border-color: #E5383B;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.ingredient-modifications,
+.additional-ingredients,
+.ingredient-item {
+    margin: 0;
+    padding-left: 1rem;
+    color: #666;
 }
 
 /* Button Styles */
@@ -387,8 +395,8 @@ hr{
 }
 
 .button-cancel {
-    border-color: #E5383B;
-    color: #E5383B;
+    border-color: #dc3545;
+    color: #dc3545;
 }
 
 .button-modify {
@@ -411,8 +419,8 @@ hr{
 }
 
 .btn-no {
-    border-color: #E5383B!important;
-    color: #E5383B!important;
+    border-color: #dc3545!important;
+    color: #dc3545!important;
 }
 .done-btn {
     border-color: green!important;
@@ -432,8 +440,8 @@ hr{
     color: black!important;
 }
 .btn-place-order{
-    border-color: #E5383B;
-    color: #E5383B;
+    border-color: #dc3545;
+    color: #dc3545;
 }
 
 .customize-modal {
@@ -709,7 +717,7 @@ hr{
 
 .modified-ingredients-section{
     color: white;
-    background-color:  #E5383B;
+    background-color:  #dc3545;
     border-radius: 5px;
     display: inline-block !important;
     padding: 5px;
@@ -744,7 +752,7 @@ hr{
     font-size: 1.3rem;
 }
 .notification-bubble {
-    border-color: #E5383B!important;
+    border-color: #dc3545!important;
     background-color: #ffcc00; /* Change background color to make it more visible */
     border: 2px solid;
     color: #000;
