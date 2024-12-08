@@ -459,6 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="modal-body">
                                     <div class="text-center">
                                         <i class="fa-solid fa-check" style="color: #28a745; font-size: 10rem; margin-bottom: 15px;"></i>
+                                        <p class="text-muted mb-0">Make sure you send your order to the kitchen using the <strong>Cart</strong> button!</p>
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
@@ -899,7 +900,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                     <td>${formatOrderDate(order)}</td>
                                                     <td>${item.name}</td>
                                                     <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
-                                                    <td>${item.quantity}</td>
+                                                    <td class = "item-quantity-progress">${item.quantity}</td>
                                                 </tr>
                                                 <tr class="modification-row">
                                                     <td colspan="4">
