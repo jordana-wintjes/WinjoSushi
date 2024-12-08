@@ -333,41 +333,38 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <p class="item-description">${item.description}</p>
                                 ${(() => {
                                     // Check if there are any valid removable ingredients
-                                    const hasValidRemovedIngredients = item.removableIngredients && 
+                                    const hasValidRemovedIngredients = item.removableIngredients &&
                                         Object.entries(item.removableIngredients)
                                             .filter(([ingredient, level]) =>
                                                 typeof ingredient === 'string' &&
                                                 (level === 'none' || level === 'light') &&
                                                 isNaN(ingredient)
                                             ).length > 0;
-                                
+                                    
                                     // Check all conditions
-                                    const shouldShowSection = 
-                                        item.specialRequests || 
+                                    const shouldShowSection =
+                                        item.specialRequests ||
                                         (item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0) ||
                                         hasValidRemovedIngredients;
-                                
+                                    
                                     return shouldShowSection ? `
                                         <div class="modified-ingredients-section">
-                                            ${item.specialRequests ? `<h6>Special Requests:</h6><p>${item.specialRequests}</p>` : ''}
+                                            <h6 class><strong>Customizations:</strong></h6>
                                             <div class="modified-ingredients-list">
-                                                ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ? `
-                                                    <h6>Added Ingredients:</h6>
-                                                    ${item.additionalIngredientsSelected.map(ingredient =>
+                                                ${item.specialRequests ? `<p>${item.specialRequests}</p>` : ''}
+                                                ${item.additionalIngredientsSelected && item.additionalIngredientsSelected.length > 0 ?
+                                                    item.additionalIngredientsSelected.map(ingredient =>
                                                         `<p>${"+ " + ingredient.quantity + " " + ingredient.name + " " + ingredient.totalPrice}</p>`
-                                                    ).join('')}
-                                                ` : ''}
-                                                ${hasValidRemovedIngredients ? `
-                                                    <h6>Modified Ingredients:</h6>
-                                                    ${Object.entries(item.removableIngredients)
+                                                    ).join('') : ''}
+                                                ${hasValidRemovedIngredients ?
+                                                    Object.entries(item.removableIngredients)
                                                         .filter(([ingredient, level]) =>
                                                             typeof ingredient === 'string' &&
                                                             (level === 'none' || level === 'light') &&
                                                             isNaN(ingredient)
                                                         )
                                                         .map(([ingredient, level]) => `<p>${level === 'none' ? 'No' : 'Light'} ${ingredient}</p>`)
-                                                        .join('')}
-                                                ` : ''}
+                                                        .join('') : ''}
                                             </div>
                                         </div>
                                     ` : '';
