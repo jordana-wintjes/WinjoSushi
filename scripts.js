@@ -793,14 +793,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="tab-content mt-3" id="cartTabContent">
                                     <div class="tab-pane fade show active" id="current-cart" role="tabpanel">
                                         ${generateCartContent(currentCart)}
-                                        <div id="cart-total" class="mt-3">
-                                        </div>
-                                        <div class="modal-footer border-0">
-                                            <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
-                                            ${currentCart && currentCart.items && currentCart.items.length > 0 ? 
-                                                `<button type="button" class="button btn-place-order" id="place-order-btn">Place Order</button>` : 
-                                            ''}
-                                        </div>
                                     </div>
                                     <div class="tab-pane fade" id="in-progress" role="tabpanel">
                                         <div class="orders">
@@ -897,65 +889,64 @@ document.addEventListener('DOMContentLoaded', function () {
                         </tr>
                     </thead>
                     <tbody>
-                        ${orders.flatMap(order =>
-                            order.items.map(item => `
-                                <tr>
-                                    <td>${formatOrderDate(order)}</td>
-                                    <td>${item.name}</td>
-                                    <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
-                                    <td>${item.quantity}</td>
-                                </tr>
-                                ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
-                                    <tr class="modification-row">
-                                        <td colspan="4">
-                                            <div class="additional-ingredients">
-                                                <p class="mb-1"><strong>Additional Ingredients:</strong></p>
-                                                ${item.additionalIngredients
-                                                    .filter(ing => ing.quantity > 0)
-                                                    .map(ing => `
-                                                        <div class="ingredient-item">
-                                                            ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
-                                                        </div>
-                                                    `).join('')}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ` : ''}
-                                ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
-                                    <tr class="modification-row">
-                                        <td colspan="4">
-                                            <div class="ingredient-modifications">
-                                                <p class="mb-1"><strong>Ingredient Modifications:</strong></p>
-                                                ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
-                                                    <div class="ingredient-item">
-                                                        ${ingredient}: ${level}
-                                                    </div>
-                                                `).join('')}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ` : ''}
-                                ${item.specialInstructions ? `
-                                    <tr class="modification-row">
-                                        <td colspan="4">
-                                            <p class="mb-1"><strong>Special Instructions:</strong></p>
-                                            <p class="special-instructions">${item.specialInstructions}</p>
-                                        </td>
-                                    </tr>
-                                ` : ''}
-                            `).join('')
-                        ).join('')}
+                        <tr>
+                            <td colspan="4">
+                            ${orders.flatMap(order =>
+                                order.items.map(item => `   
+                                    <div class="cart-item">
+                                        <table>
+                                                <tr>
+                                                    <td>${formatOrderDate(order)}</td>
+                                                    <td>${item.name}</td>
+                                                    <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
+                                                    <td>${item.quantity}</td>
+                                                </tr>
+                                                <tr class="modification-row">
+                                                    <td colspan="4">
+                                                        ${item.additionalIngredients && item.additionalIngredients.filter(ing => ing.quantity > 0).length > 0 ? `
+                                                            <div class="additional-ingredients">
+                                                                ${item.additionalIngredients
+                                                                    .filter(ing => ing.quantity > 0)
+                                                                    .map(ing => `
+                                                                        <div class="ingredient-item">
+                                                                            • ${ing.ingredient} (Qty: ${ing.quantity}) - $${(ing.price).toFixed(2)}
+                                                                        </div>
+                                                                    `).join('')}
+                                                            </div>
+                                                        ` : ''}
+                                                        ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
+                                                            <div class="ingredient-modifications">
+                                                                ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
+                                                                    <div class="ingredient-item">
+                                                                        • ${ingredient}: ${level}
+                                                                    </div>
+                                                                `).join('')}
+                                                            </div>
+                                                        ` : ''}
+                                                        ${item.specialInstructions ? `
+                                                            <div class="ingredient-item"> • ${item.specialInstructions}</div>
+                                                        ` : ''}
+                                                    </td>
+                                                </tr>
+                                        </table>
+                                    </div>
+                                `).join('')
+                            ).join('')}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <hr>
-                ${isPastOrders ? `
-                <div class="cartCost">
-                    <h5>Number of Items: ${itemCount}</h5>
-                    <h5>Subtotal: $${formattedSubtotal}</h5>
-                    <h5>Tax: $${tax}</h5>
-                    <h5>Total: $${total}</h5>
+                <div class="bottom-cart-content">
+                    ${isPastOrders ? `
+                    <div class="cartCost">
+                        <h5>Number of Items: ${itemCount}</h5>
+                        <h5>Subtotal: $${formattedSubtotal}</h5>
+                        <h5>Tax: $${tax}</h5>
+                        <h5>Total: $${total}</h5>
+                    </div>
+                    ` : ''}
                 </div>
-                ` : ''}
             </div>
         `;
     }
@@ -988,73 +979,79 @@ document.addEventListener('DOMContentLoaded', function () {
                     </tr>
                 </thead>
                 <tbody class="cartItems">
-                    ${cart.items.map(item => `
-                        <tr>
-                            <td>${item.name}</td>
-                            <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
-                            <td>
-                                <div class="quantity-control">
-                                    <span class="quantity-value">${item.quantity}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="remove-item-btn">
-                                    <button type="button" class="btn btn-link text-danger" onclick="showRemoveConfirmation('${cart._id}', '${item._id}', '${item.name}')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        
-                        ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
-                            <tr class="modification-row">
-                                <td colspan="4">
-                                    <div class="ingredient-modifications">
-                                        <p class="mb-1"><strong>Ingredient Modifications:</strong></p>
-                                        ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
-                                            <div class="ingredient-item">
-                                                ${ingredient}: ${level}
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </td>
-                            </tr>
-                        ` : ''}
-                        
-                        ${item.additionalIngredients && item.additionalIngredients.length > 0 ? `
-                            <tr class="modification-row">
-                                <td colspan="4">
-                                    <div class="additional-ingredients">
-                                        <p class="mb-1"><strong>Additional Ingredients:</strong></p>
-                                        ${item.additionalIngredients
-                                            .filter(ing => ing.quantity > 0)
-                                            .map(ing => `
-                                                <div class="ingredient-item">
-                                                    ${ing.ingredient} (Qty: ${ing.quantity}) - $${ing.price.toFixed(2)}
+                    <tr>
+                        <td colspan="4">
+                            ${cart.items.map(item => `
+                                <div class="cart-item">
+                                    <table>
+                                        <tr>
+                                            <td>${item.name}</td>
+                                            <td>$${(item.basePrice + item.addonsTotal).toFixed(2)}</td>
+                                            <td>
+                                                <div class="quantity-control">
+                                                    <span class="quantity-value">${item.quantity}</span>
                                                 </div>
-                                            `).join('')}
-                                    </div>
-                                </td>
-                            </tr>
-                        ` : ''}
-                        
-                        ${item.specialInstructions ? `
-                            <tr class="modification-row">
-                                <td colspan="4">
-                                    <p class="mb-1"><strong>Special Instructions:</strong></p>
-                                    <p class="special-instructions">${item.specialInstructions}</p>
-                                </td>
-                            </tr>
-                        ` : ''}
-                    `).join('')}
+                                            </td>
+                                            <td>
+                                                <div class="remove-item-btn">
+                                                    <button type="button" class="btn btn-link text-danger" onclick="showRemoveConfirmation('${cart._id}', '${item._id}', '${item.name}')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="modification-row">
+                                            <td colspan="4">
+                                                ${item.removableIngredients && Object.keys(item.removableIngredients).length > 0 ? `
+                                                    <div class="ingredient-modifications">
+                                                        ${Object.entries(item.removableIngredients).map(([ingredient, level]) => `
+                                                            <div class="ingredient-item">
+                                                                • ${ingredient}: ${level}
+                                                            </div>
+                                                        `).join('')}
+                                                    </div>
+                                                ` : ''}
+
+                                                ${item.additionalIngredients && item.additionalIngredients.length > 0 ? `
+                                                    <div class="additional-ingredients">
+                                                        ${item.additionalIngredients
+                                                            .filter(ing => ing.quantity > 0)
+                                                            .map(ing => `
+                                                                <div class="ingredient-item">
+                                                                    • ${ing.ingredient} (Qty: ${ing.quantity}) - $${ing.price.toFixed(2)}
+                                                                </div>
+                                                            `).join('')}
+                                                    </div>
+                                                ` : ''}
+
+                                                ${item.specialInstructions ? `
+                                                    <div class="ingredient-item"> • ${item.specialInstructions}</div>
+                                                ` : ''}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            `).join('')}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <hr>
-            <div class="cartCost">
-                <h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5>
-                <h5>Tax: $${cart.tax.toFixed(2)}</h5>
-                <h5>Total: $${cart.total.toFixed(2)}</h5>
+            <div class="bottom-cart-content">
+                <div class="cartCost">
+                    <h5>Total Number of Items: ${cart.items.length}</h5>
+                    <h5>Subtotal: $${cart.subtotal.toFixed(2)}</h5>
+                    <h5>Tax: $${cart.tax.toFixed(2)}</h5>
+                    <h5>Total: $${cart.total.toFixed(2)}</h5>
+                </div>
+                <div class="modal-footer border-0">
+                <button type="button" class="button btn-close" data-dismiss="modal">Close</button>
+                ${cart && cart.items && cart.items.length > 0 ? 
+                    `<button type="button" class="button btn-place-order" id="place-order-btn">Place Order</button>` : 
+                ''}
+                </div>
             </div>`;
+
     
         return content;
     }

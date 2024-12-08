@@ -162,9 +162,9 @@ html, body {
     flex-direction: row;
     justify-content: flex-start;
     gap: 20px;
-}
-.cartCost{
-    /* margin-top: 30px; */
+    border: 1px solid black;
+    border-radius: 3px;
+    margin-bottom: 1vh;
 }
 
 /* Menu List Styles */
@@ -619,11 +619,15 @@ hr{
 .text-center{
     font-size: 1rem;
 }
-  .receipt-table tbody td,
-  .receipt-table thead th {
-      width: 25%;
-      text-align: center;
-  }
+.receipt-table tbody td,
+.receipt-table thead th {
+    width: 25%;
+    text-align: left;
+}
+
+.receipt-table tbody td:last-child{
+    text-align: center;
+}
 
 .receipt-table tr {
     width: 100%;
@@ -691,6 +695,8 @@ hr{
 
 .modification-row td {
     padding: 0.5rem 1rem;
+    text-align: left !important;
+
 }
 
 .receipt-table tr:not(:last-child) {
@@ -766,4 +772,19 @@ hr{
     padding: 3px 6px;
     border-radius: 50%;
     z-index: 1; /* Ensure the bubble is on top of the button */
+}
+
+.bottom-cart-content{
+    display: flex;
+    flex-direction: row ;
+    justify-content: space-between;
+}
+.right-corner {
+    justify-content: flex-end; /* Align horizontally to the right */
+    align-items: flex-end; /* Align vertically to the bottom */
+}
+  
+
+.modal-footer{
+    align-items: end;
 }
